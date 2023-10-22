@@ -1,6 +1,6 @@
 /*
 Semestre 2024-1
-Práctica 7: Iluminación 1 
+Proyecto Final Museo de la Biodiversidad
 */
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
