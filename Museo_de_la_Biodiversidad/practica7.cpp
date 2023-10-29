@@ -208,7 +208,7 @@ int main()
 	dirtTexture.LoadTextureA();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureA();
-	pisoTexture = Texture("Textures/piso.tga");
+	pisoTexture = Texture("Textures/R.jpg");
 	pisoTexture.LoadTextureA();
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
@@ -221,12 +221,12 @@ int main()
 	Blackhawk_M.LoadModel("Models/uh60.obj");
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_lf.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_dn.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_up.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_bk.tga");
+	skyboxFaces.push_back("Textures/Skybox/majesty_ft.tga");
 
 	skybox = Skybox(skyboxFaces);
 
@@ -236,18 +236,21 @@ int main()
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.3f, 0.3f,
-		0.0f, 0.0f, -1.0f);
+		0.6f, 0.6f,
+		0.0f, -1.0f, 0.0f);
+	
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
+	unsigned int spotLightCount = 0;
+	/*
 	//Declaración de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f,
+		0.0f, 0.0f,
 		-6.0f, 1.5f, 1.5f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 	pointLights[1] = PointLight(0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f,
+		0.0f, 0.0f,
 		6.0f, 4.5f, 1.5f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
@@ -255,7 +258,7 @@ int main()
 	unsigned int spotLightCount = 0;
 	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
+		0.0f, 0.0f,
 		0.0f, 0.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -264,7 +267,7 @@ int main()
 
 	//luz fija
 	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
-		1.0f, 2.0f,
+		0.0f, 0.0f,
 		5.0f, 10.0f, 0.0f,
 		0.0f, -5.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -272,7 +275,7 @@ int main()
 	spotLightCount++;
 
 	spotLights[2] = SpotLight(0.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
+		0.0f, 0.0f,
 		-15.0f, 10.0f, 0.0f,
 		0.0f, -1.0f, 0.0f,
 		1.0f, 0.0f, 0.0f,
@@ -281,6 +284,7 @@ int main()
 	
 	//se crean mas luces puntuales y spotlight 
 
+	*/
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
@@ -308,7 +312,7 @@ int main()
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -317,9 +321,9 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-	
+
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-			glm::vec3 lowerLight = camera.getCameraPosition();
+		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
@@ -345,6 +349,7 @@ int main()
 
 		meshList[2]->RenderMesh();
 
+		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
@@ -410,6 +415,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[3]->RenderMesh();
 		glDisable(GL_BLEND);
+		*/
 
 		glUseProgram(0);
 
