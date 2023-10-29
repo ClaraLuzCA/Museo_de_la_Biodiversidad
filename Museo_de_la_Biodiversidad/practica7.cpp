@@ -48,12 +48,15 @@ Texture dirtTexture;
 Texture plainTexture;
 Texture pisoTexture;
 Texture AgaveTexture;
+Texture Domo_Exterior;
+Texture Domo_Interior;
 
 Model Kitt_M;
 Model Llanta_M;
 Model Camino_M;
 Model Blackhawk_M;
 Model Dado_M;
+Model Domos;
 
 Skybox skybox;
 
@@ -213,12 +216,17 @@ int main()
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
 
+	Domo_Exterior = Texture("Textures/Domo_exterior");
+	Domo_Interior = Texture("Textures/Domo_interior");
+
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
 	Llanta_M = Model();
 	Llanta_M.LoadModel("Models/llanta_optimizada.obj");
 	Blackhawk_M = Model();
 	Blackhawk_M.LoadModel("Models/uh60.obj");
+	Domos = Model();
+	Domos.LoadModel("Models/Domoobj.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
@@ -349,6 +357,13 @@ int main()
 
 		meshList[2]->RenderMesh();
 
+		//Instancia del domo
+		model = glm::mat4(1.0);
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		Domo_Exterior.UseTexture();
+		Domo_Interior.UseTexture();
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Domos.RenderModel();
 		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);
