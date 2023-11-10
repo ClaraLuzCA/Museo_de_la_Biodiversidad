@@ -48,12 +48,17 @@ Texture dirtTexture;
 Texture plainTexture;
 Texture pisoTexture;
 Texture AgaveTexture;
+Texture Domo_Exterior;
+Texture Domo_Interior;
+Texture Tierra_Texture;
 
 Model Kitt_M;
 Model Llanta_M;
 Model Camino_M;
 Model Blackhawk_M;
 Model Dado_M;
+Model Domos;
+Model Tierra;
 
 Skybox skybox;
 
@@ -208,10 +213,15 @@ int main()
 	dirtTexture.LoadTextureA();
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureA();
-	pisoTexture = Texture("Textures/R.jpg");
+	pisoTexture = Texture("Textures/TCom_Pavement_Terrazzo2_512_albedo.tga");
 	pisoTexture.LoadTextureA();
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
+
+	Domo_Exterior = Texture("Textures/Domo_exterior");
+	Domo_Interior = Texture("Textures/Domo_interior");
+
+	Tierra_Texture = Texture("Textures/Earth.jpg");
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
@@ -219,6 +229,10 @@ int main()
 	Llanta_M.LoadModel("Models/llanta_optimizada.obj");
 	Blackhawk_M = Model();
 	Blackhawk_M.LoadModel("Models/uh60.obj");
+	Domos = Model();
+	Domos.LoadModel("Models/Domoobj.obj");
+	Tierra = Model();
+	Tierra.LoadModel("Models/TierraOBJ.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
@@ -348,6 +362,22 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
 		meshList[2]->RenderMesh();
+
+		//Instancia del domo
+		model = glm::mat4(1.0);
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		Domo_Exterior.UseTexture();
+		Domo_Interior.UseTexture();
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Domos.RenderModel();
+
+		//Instancia de la Tierra
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 0.5f, 5.0f));
+		model = glm::scale(model, glm::vec3(0.58f, 0.58f, 0.58f));
+		Tierra_Texture.UseTexture();
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Tierra.RenderModel();
 
 		/*
 		//Instancia del coche 
