@@ -63,6 +63,7 @@ Model Dado_M;
 Model Domos;
 Model Tierra;
 Model Mariposa;
+Model Lampara;
 
 Skybox skybox;
 
@@ -241,6 +242,8 @@ int main()
 	Tierra.LoadModel("Models/TierraOBJ.obj");
 	Mariposa = Model();
 	Mariposa.LoadModel("Models/mariposa.obj");
+	Lampara = Model();
+	Lampara.LoadModel("Models/lampara.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
@@ -437,6 +440,66 @@ int main()
 		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Mariposa.RenderModel();
+
+		//LAMPARAS
+		//sala1
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(20.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model,225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(90.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 115 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(90.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Lampara.RenderModel();
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(20.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+		//sala2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-15.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 115 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-15.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Lampara.RenderModel();
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+
 		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);
