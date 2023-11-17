@@ -37,6 +37,11 @@ Proyecto Final Museo de la Biodiversidad
 #include "Material.h"
 const float toRadians = 3.14159265f / 180.0f;
 
+//variables animación
+GLfloat earthRotationAngle = 0.0f;
+
+//Variables para KeyFrames
+
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -51,6 +56,8 @@ Texture AgaveTexture;
 Texture Domo_Exterior;
 Texture Domo_Interior;
 Texture Tierra_Texture;
+Texture MariposaTexture;
+Texture GorilaTexture;
 
 Model Kitt_M;
 Model Llanta_M;
@@ -59,6 +66,27 @@ Model Blackhawk_M;
 Model Dado_M;
 Model Domos;
 Model Tierra;
+Model Mariposa;
+Model Lampara;
+
+// Gorila
+Model CabezaGorila;
+Model CuerpoGorila;
+Model AnteBrazoRGorila;
+Model AnteBrazoLGorila;
+Model BrazoRGorila;
+Model BrazoLGorila;
+Model CaderaGorila;
+Model PiernaRGorila;
+Model PiernaLGorila;
+Model PieRGorila;
+Model PieLGorila;
+
+glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
+glm::mat4 tmpAnteBrazoLGorila = glm::mat4(1.0f);
+glm::mat4 tmpAnteBrazoRGorila = glm::mat4(1.0f);
+glm::mat4 tmpPiernaLGorila = glm::mat4(1.0f);
+glm::mat4 tmpPiernaRGorila = glm::mat4(1.0f);
 
 Skybox skybox;
 
@@ -84,6 +112,8 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
+//función para teclado de keyframes 
+void inputKeyframes(bool* keys);
 
 //función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
@@ -195,6 +225,111 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+bool animacion = false;
+
+//NEW// Keyframes
+
+/*
+float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
+float	movAvion_x = 0.0f, movAvion_y = 0.0f;
+float giroAvion = 0;
+*/
+
+#define MAX_FRAMES 100
+int i_max_steps = 90;
+int i_curr_steps = 0;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	/*
+	float movAvion_x;		//Variable para PosicionX
+	float movAvion_y;		//Variable para PosicionY
+	float movAvion_xInc;		//Variable para IncrementoX
+	float movAvion_yInc;		//Variable para IncrementoY
+	float giroAvion;
+	float giroAvionInc;
+	*/
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 0;			//introducir datos
+bool play = false;
+int playIndex = 0;
+
+void saveFrame(void) //tecla L
+{
+
+	printf("frameindex %d\n", FrameIndex);
+
+	/*
+	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
+	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
+	KeyFrame[FrameIndex].giroAvion = giroAvion;//completar
+	//no volatil, agregar una forma de escribir a un archivo para guardar los frames
+
+	*/
+	FrameIndex++;
+}
+
+void resetElements(void) //Tecla 0
+{
+	/*
+	movAvion_x = KeyFrame[0].movAvion_x;
+	movAvion_y = KeyFrame[0].movAvion_y;
+	giroAvion = KeyFrame[0].giroAvion;
+	*/
+}
+
+void interpolation(void)
+{
+	/*
+	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
+	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
+	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
+	*/
+
+}
+
+
+void animate(void)
+{
+	//Movimiento del objeto con barra espaciadora
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
+		{
+			playIndex++;
+			printf("playindex : %d\n", playIndex);
+			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+			{
+				printf("Frame index= %d\n", FrameIndex);
+				printf("termino la animacion\n");
+				playIndex = 0;
+				play = false;
+			}
+			else //Interpolación del próximo cuadro
+			{
+
+				i_curr_steps = 0; //Resetea contador
+				//Interpolar
+				interpolation();
+			}
+		}
+		else
+		{
+			//Dibujar Animación
+			/*
+			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
+			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
+			giroAvion += KeyFrame[playIndex].giroAvionInc;
+			i_curr_steps++;
+			*/
+		}
+
+	}
+}
+
+///////////////* FIN KEYFRAMES*////////////////////////////
 
 
 int main()
@@ -217,11 +352,17 @@ int main()
 	pisoTexture.LoadTextureA();
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
+	MariposaTexture = Texture("Texture/1.jpg");
+	MariposaTexture.LoadTexture();
 
 	Domo_Exterior = Texture("Textures/Domo_exterior");
 	Domo_Interior = Texture("Textures/Domo_interior");
 
 	Tierra_Texture = Texture("Textures/Earth.jpg");
+	
+	//Texturas Gorila
+	//GorilaTexture = Texture("Textures/Body-TM_u0_v0.png");
+	//GorilaTexture.LoadTextureA();
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
@@ -233,6 +374,44 @@ int main()
 	Domos.LoadModel("Models/Domoobj.obj");
 	Tierra = Model();
 	Tierra.LoadModel("Models/TierraOBJ.obj");
+	Mariposa = Model();
+	Mariposa.LoadModel("Models/mariposa.obj");
+	Lampara = Model();
+	Lampara.LoadModel("Models/lampara.obj");
+	
+	
+	CabezaGorila = Model();
+	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
+
+	CuerpoGorila = Model();
+	CuerpoGorila.LoadModel("Models/Gorila/Cuerpo.obj");
+
+	AnteBrazoLGorila = Model();
+	AnteBrazoLGorila.LoadModel("Models/Gorila/AnteBrazoL.obj");
+
+	AnteBrazoRGorila = Model();
+	AnteBrazoRGorila.LoadModel("Models/Gorila/AnteBrazoR.obj");
+
+	BrazoLGorila = Model();
+	BrazoLGorila.LoadModel("Models/Gorila/BrazoL.obj");
+
+	BrazoRGorila = Model();
+	BrazoRGorila.LoadModel("Models/Gorila/BrazoR.obj");
+
+	CaderaGorila = Model();
+	CaderaGorila.LoadModel("Models/Gorila/Cadera.obj");
+
+	PiernaLGorila = Model();
+	PiernaLGorila.LoadModel("Models/Gorila/PiernaL.obj");
+
+	PiernaRGorila = Model();
+	PiernaRGorila.LoadModel("Models/Gorila/PiernaR.obj");
+
+	PieLGorila = Model();
+	PieLGorila.LoadModel("Models/Gorila/PieL.obj");
+
+	PieRGorila = Model();
+	PieRGorila.LoadModel("Models/Gorila/PieR.obj");
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
@@ -379,6 +558,170 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Tierra.RenderModel();
 
+		//Instancia Mariposas
+		//mariposa centro
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 50.5f, 5.0f));
+		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));		
+		
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+		//mariposa atras
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(70.0f, 40.5f, 5.0f));
+		model = glm::scale(model, glm::vec3(0.40f, 0.40f, 0.40f)); 
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 45* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+		//mariposa enfrente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 45.5f, 5.0f));
+		model = glm::scale(model, glm::vec3(0.40f, 0.40f, 0.40f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+
+		//mariposa enfrente 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(15.0f, 35.5f, 15.0f));
+		model = glm::scale(model, glm::vec3(0.30f, 0.3f, 0.3f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+		//mariposa centro derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 50.5f, 25.0f));
+		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+		//mariposa centro izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 50.5f, -25.0f));
+		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Mariposa.RenderModel();
+
+		//LAMPARAS
+		//sala1
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(20.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model,225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(90.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 115 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(90.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Lampara.RenderModel();
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(20.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+		//sala2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-15.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 115 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-15.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Lampara.RenderModel();
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara.RenderModel();
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Gorila
+		// -------------------------------------------------------------------------------------------------------------------------
+		model = glm::mat4(1.0);
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		tmpCaderaGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		//GorilaTexture.UseTexture();
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CaderaGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f,0.0f,0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CuerpoGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpAnteBrazoLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AnteBrazoLGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpAnteBrazoRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		AnteBrazoRGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpPiernaLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaLGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpPiernaRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaRGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CabezaGorila.RenderModel();
+
+		model = glm::translate(tmpAnteBrazoLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		BrazoLGorila.RenderModel();
+
+		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		BrazoRGorila.RenderModel();
+
+		model = glm::translate(tmpPiernaLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PieLGorila.RenderModel();
+
+		model = glm::translate(tmpPiernaRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PieRGorila.RenderModel();
+
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CabezaGorila.RenderModel();
+
 		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);
@@ -453,4 +796,88 @@ int main()
 	}
 
 	return 0;
+}
+
+void inputKeyframes(bool* keys)
+{
+
+	/*
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				habilitaranimacion = 0;
+
+			}
+			else
+			{
+				play = false;
+
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (habilitaranimacion < 1 && reproduciranimacion>0)
+		{
+			printf("Ya puedes reproducir de nuevo la animación con la tecla de barra espaciadora'\n");
+			reproduciranimacion = 0;
+
+		}
+	}
+
+	if (keys[GLFW_KEY_L])
+	{
+		if (guardoFrame < 1)
+		{
+			saveFrame();
+			printf("movAvion_x es: %f\n", movAvion_x);
+			printf("movAvion_y es: %f\n", movAvion_y);
+			printf("presiona P para habilitar guardar otro frame'\n");
+			guardoFrame++;
+			reinicioFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		if (reinicioFrame < 1 && guardoFrame>0)
+		{
+			guardoFrame = 0;
+			printf("Ya puedes guardar otro frame presionando la tecla L'\n");
+		}
+	}
+
+
+	if (keys[GLFW_KEY_1])
+	{
+		if (ciclo < 1)
+		{
+			//printf("movAvion_x es: %f\n", movAvion_x);
+			movAvion_x += 1.0f;
+			printf("\n movAvion_x es: %f\n", movAvion_x);
+			ciclo++;
+			ciclo2 = 0;
+			printf("\n Presiona la tecla 2 para poder habilitar la variable\n");
+		}
+
+	}
+	if (keys[GLFW_KEY_2])
+	{
+		if (ciclo2 < 1 && ciclo>0)
+		{
+			ciclo = 0;
+			printf("\n Ya puedes modificar tu variable presionando la tecla 1\n");
+		}
+	}
+	*/
 }
