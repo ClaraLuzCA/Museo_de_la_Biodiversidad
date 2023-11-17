@@ -29,15 +29,17 @@ Proyecto Final Museo de la Biodiversidad
 #include"Model.h"
 #include "Skybox.h"
 
-//para iluminación
+//para iluminaciÃ³n
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
 const float toRadians = 3.14159265f / 180.0f;
+//variables animaciÃ³n
+GLfloat earthRotationAngle = 0.0f;
 
-//variables animación
+//variables animaciÃ³n
 GLfloat earthRotationAngle = 0.0f;
 
 //Variables para KeyFrames
@@ -112,10 +114,10 @@ static const char* vShader = "shaders/shader_light.vert";
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
-//función para teclado de keyframes 
+//funciÃ³n para teclado de keyframes 
 void inputKeyframes(bool* keys);
 
-//función de calculo de normales por promedio de vértices 
+//funciÃ³n de calculo de normales por promedio de vÃ©rtices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -296,18 +298,18 @@ void animate(void)
 	//Movimiento del objeto con barra espaciadora
 	if (play)
 	{
-		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
+		if (i_curr_steps >= i_max_steps) //fin de animaciÃ³n entre frames?
 		{
 			playIndex++;
 			printf("playindex : %d\n", playIndex);
-			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+			if (playIndex > FrameIndex - 2)	//Fin de toda la animaciÃ³n con Ãºltimo frame?
 			{
 				printf("Frame index= %d\n", FrameIndex);
 				printf("termino la animacion\n");
 				playIndex = 0;
 				play = false;
 			}
-			else //Interpolación del próximo cuadro
+			else //InterpolaciÃ³n del prÃ³ximo cuadro
 			{
 
 				i_curr_steps = 0; //Resetea contador
@@ -317,7 +319,7 @@ void animate(void)
 		}
 		else
 		{
-			//Dibujar Animación
+			//Dibujar AnimaciÃ³n
 			/*
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
 			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
@@ -427,7 +429,7 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 
-	//luz direccional, sólo 1 y siempre debe de existir
+	//luz direccional, sÃ³lo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.6f, 0.6f,
 		0.0f, -1.0f, 0.0f);
@@ -436,7 +438,7 @@ int main()
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
 	/*
-	//Declaración de primer luz puntual
+	//DeclaraciÃ³n de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f,
 		-6.0f, 1.5f, 1.5f,
@@ -506,7 +508,7 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 
-		//información en el shader de intensidad especular y brillo
+		//informaciÃ³n en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
@@ -515,12 +517,12 @@ int main()
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
 
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
+		//sirve para que en tiempo de ejecuciÃ³n (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
 		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
-		//información al shader de fuentes de iluminación
+		//informaciÃ³n al shader de fuentes de iluminaciÃ³n
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
@@ -549,11 +551,13 @@ int main()
 		Domo_Interior.UseTexture();
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Domos.RenderModel();
+		earthRotationAngle += 0.5f * deltaTime;
 
 		//Instancia de la Tierra
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 0.5f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.58f, 0.58f, 0.58f));
+		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
+		model = glm::rotate(model, earthRotationAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		Tierra_Texture.UseTexture();
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Tierra.RenderModel();
@@ -664,6 +668,7 @@ int main()
 		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
+		
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
@@ -775,7 +780,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Blackhawk_M.RenderModel();
 
-		//Agave ¿qué sucede si lo renderizan antes del coche y el helicóptero? // DESAPAECE EL COCHE Y EL HELICOPTERO
+		//Agave Â¿quÃ© sucede si lo renderizan antes del coche y el helicÃ³ptero? // DESAPAECE EL COCHE Y EL HELICOPTERO
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
@@ -815,7 +820,7 @@ void inputKeyframes(bool* keys)
 				playIndex = 0;
 				i_curr_steps = 0;
 				reproduciranimacion++;
-				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animaciÃ³n'\n");
 				habilitaranimacion = 0;
 
 			}
@@ -830,7 +835,7 @@ void inputKeyframes(bool* keys)
 	{
 		if (habilitaranimacion < 1 && reproduciranimacion>0)
 		{
-			printf("Ya puedes reproducir de nuevo la animación con la tecla de barra espaciadora'\n");
+			printf("Ya puedes reproducir de nuevo la animaciÃ³n con la tecla de barra espaciadora'\n");
 			reproduciranimacion = 0;
 
 		}
