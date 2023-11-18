@@ -40,6 +40,7 @@ const float toRadians = 3.14159265f / 180.0f;
 GLfloat earthRotationAngle = 0.0f;
 
 //Variables para KeyFrames
+float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -232,6 +233,7 @@ bool animacion = false;
 
 //NEW// Keyframes
 
+float Gorila_MovX = 0.0;
 /*
 float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
 float	movAvion_x = 0.0f, movAvion_y = 0.0f;
@@ -243,6 +245,7 @@ int i_max_steps = 90;
 int i_curr_steps = 0;
 typedef struct _frame
 {
+	float Gorila_MovX,  Gorila_MovXInc;
 	//Variables para GUARDAR Key Frames
 	/*
 	float movAvion_x;		//Variable para PosicionX
@@ -264,6 +267,7 @@ void saveFrame(void) //tecla L
 
 	printf("frameindex %d\n", FrameIndex);
 
+	KeyFrame[FrameIndex].Gorila_MovX = Gorila_MovX;
 	/*
 	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
 	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
@@ -276,6 +280,7 @@ void saveFrame(void) //tecla L
 
 void resetElements(void) //Tecla 0
 {
+	Gorila_MovX = KeyFrame[0].Gorila_MovX;
 	/*
 	movAvion_x = KeyFrame[0].movAvion_x;
 	movAvion_y = KeyFrame[0].movAvion_y;
@@ -285,6 +290,7 @@ void resetElements(void) //Tecla 0
 
 void interpolation(void)
 {
+	KeyFrame[playIndex].Gorila_MovXInc = (KeyFrame[playIndex + 1].Gorila_MovX - KeyFrame[playIndex].Gorila_MovX) / i_max_steps;
 	/*
 	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
 	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
@@ -321,6 +327,7 @@ void animate(void)
 		else
 		{
 			//Dibujar Animación
+			Gorila_MovX += KeyFrame[playIndex].Gorila_MovXInc;
 			/*
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
 			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
@@ -680,6 +687,7 @@ int main()
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(Gorila_MovX, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		tmpCaderaGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
 		//GorilaTexture.UseTexture();
@@ -822,8 +830,9 @@ int main()
 
 void inputKeyframes(bool* keys)
 {
-
-	/*
+	if (keys[GLFW_KEY_J] == GLFW_PRESS) {
+	Gorila_MovX++;
+	}
 	if (keys[GLFW_KEY_SPACE])
 	{
 		if (reproduciranimacion < 1)
@@ -863,8 +872,8 @@ void inputKeyframes(bool* keys)
 		if (guardoFrame < 1)
 		{
 			saveFrame();
-			printf("movAvion_x es: %f\n", movAvion_x);
-			printf("movAvion_y es: %f\n", movAvion_y);
+			printf("Gorila_MovX es: %f\n", Gorila_MovX);
+			//printf("movAvion_y es: %f\n", movAvion_y);
 			printf("presiona P para habilitar guardar otro frame'\n");
 			guardoFrame++;
 			reinicioFrame = 0;
@@ -885,8 +894,8 @@ void inputKeyframes(bool* keys)
 		if (ciclo < 1)
 		{
 			//printf("movAvion_x es: %f\n", movAvion_x);
-			movAvion_x += 1.0f;
-			printf("\n movAvion_x es: %f\n", movAvion_x);
+			Gorila_MovX += 1.0f;
+			printf("\n Gorila_MovX es: %f\n", Gorila_MovX);
 			ciclo++;
 			ciclo2 = 0;
 			printf("\n Presiona la tecla 2 para poder habilitar la variable\n");
@@ -901,5 +910,4 @@ void inputKeyframes(bool* keys)
 			printf("\n Ya puedes modificar tu variable presionando la tecla 1\n");
 		}
 	}
-	*/
 }
