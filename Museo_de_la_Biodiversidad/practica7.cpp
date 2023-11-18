@@ -39,9 +39,6 @@ const float toRadians = 3.14159265f / 180.0f;
 //variables animación
 GLfloat earthRotationAngle = 0.0f;
 
-//variables animación
-GLfloat earthRotationAngle = 0.0f;
-
 //Variables para KeyFrames
 
 Window mainWindow;
@@ -79,6 +76,8 @@ Model AnteBrazoLGorila;
 Model BrazoRGorila;
 Model BrazoLGorila;
 Model CaderaGorila;
+Model MusloRGorila;
+Model MusloLGorila;
 Model PiernaRGorila;
 Model PiernaLGorila;
 Model PieRGorila;
@@ -87,6 +86,8 @@ Model PieLGorila;
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoLGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoRGorila = glm::mat4(1.0f);
+glm::mat4 tmpMusloLGorila = glm::mat4(1.0f);
+glm::mat4 tmpMusloRGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaLGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaRGorila = glm::mat4(1.0f);
 
@@ -403,6 +404,12 @@ int main()
 	CaderaGorila = Model();
 	CaderaGorila.LoadModel("Models/Gorila/Cadera.obj");
 
+	MusloLGorila = Model();
+	MusloLGorila.LoadModel("Models/Gorila/MusloL.obj");
+
+	MusloRGorila = Model();
+	MusloRGorila.LoadModel("Models/Gorila/MusloR.obj");
+
 	PiernaLGorila = Model();
 	PiernaLGorila.LoadModel("Models/Gorila/PiernaL.obj");
 
@@ -694,14 +701,14 @@ int main()
 		AnteBrazoRGorila.RenderModel();
 
 		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpPiernaLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmpMusloLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		PiernaLGorila.RenderModel();
+		MusloLGorila.RenderModel();
 
 		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpPiernaRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		tmpMusloRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		PiernaRGorila.RenderModel();
+		MusloRGorila.RenderModel();
 
 		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -714,6 +721,16 @@ int main()
 		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BrazoRGorila.RenderModel();
+
+		model = glm::translate(tmpMusloLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpPiernaLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaLGorila.RenderModel();
+
+		model = glm::translate(tmpMusloRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		tmpPiernaRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaRGorila.RenderModel();
 
 		model = glm::translate(tmpPiernaLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
