@@ -14,6 +14,13 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	width = windowWidth;
 	height = windowHeight;
 	muevex = 2.0f;
+	Gorila_MovX = 0.0f;
+	Gorila_MovY = 0.0f;
+	Gorila_MovZ = 0.0f;
+	Gorila_MovCuerpo = 0.0f;
+	Gorila_MovBrazo = 0.0f;
+	Gorila_MovManoL = 0.0f;
+	Gorila_MovManoR = 0.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -112,8 +119,62 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow-> muevex -= 1.0;
 	}
-
-
+	if (key == GLFW_KEY_J)
+	{
+		theWindow->Gorila_MovX += 0.3;
+	}
+	if (key == GLFW_KEY_L)
+	{
+		theWindow->Gorila_MovX -= 0.3;
+	}
+	if (key == GLFW_KEY_I)
+	{
+		theWindow->Gorila_MovY += 0.1;
+	}
+	if (key == GLFW_KEY_K)
+	{
+		theWindow->Gorila_MovY -= 0.3;
+	}
+	if (key == GLFW_KEY_Y)
+	{
+		theWindow->Gorila_MovZ += 0.3;
+	}
+	if (key == GLFW_KEY_H)
+	{
+		theWindow->Gorila_MovZ -= 0.3;
+	}
+	if (key == GLFW_KEY_1)
+	{
+		theWindow->Gorila_MovCuerpo += 0.3;
+	}
+	if (key == GLFW_KEY_2)
+	{
+		theWindow->Gorila_MovCuerpo -= 0.3;
+	}
+	if (key == GLFW_KEY_3)
+	{
+		theWindow->Gorila_MovBrazo += 0.3;
+	}
+	if (key == GLFW_KEY_4)
+	{
+		theWindow->Gorila_MovBrazo -= 0.3;
+	}
+	if (key == GLFW_KEY_5)
+	{
+		theWindow->Gorila_MovManoL += 0.3;
+	}
+	if (key == GLFW_KEY_6)
+	{
+		theWindow->Gorila_MovManoL -= 0.3;
+	}
+	if (key == GLFW_KEY_7)
+	{
+		theWindow->Gorila_MovManoR += 0.3;
+	}
+	if (key == GLFW_KEY_8)
+	{
+		theWindow->Gorila_MovManoR -= 0.3;
+	}
 
 	if (key >= 0 && key < 1024)
 	{

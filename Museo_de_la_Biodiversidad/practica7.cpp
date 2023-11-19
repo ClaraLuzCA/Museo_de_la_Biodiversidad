@@ -83,8 +83,11 @@ Model PiernaRGorila;
 Model PiernaLGorila;
 Model PieRGorila;
 Model PieLGorila;
+Model Pivote;
 
+glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
+glm::mat4 tmpCuerpoGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoLGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoRGorila = glm::mat4(1.0f);
 glm::mat4 tmpMusloLGorila = glm::mat4(1.0f);
@@ -233,7 +236,14 @@ bool animacion = false;
 
 //NEW// Keyframes
 
-float Gorila_MovX = 0.0;
+float	Gorila_MovX = 0.0f,
+		Gorila_MovY = 0.0f,
+		Gorila_MovZ = 0.0f,
+		Gorila_MovCadera = 0.0f,
+		Gorila_MovCuerpo = 0.0f,
+		Gorila_MovBrazo = 0.0f,
+		Gorila_MovManoL = 0.0f,
+		Gorila_MovManoR = 0.0f;
 /*
 float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
 float	movAvion_x = 0.0f, movAvion_y = 0.0f;
@@ -241,11 +251,24 @@ float giroAvion = 0;
 */
 
 #define MAX_FRAMES 100
-int i_max_steps = 90;
-int i_curr_steps = 0;
+int i_max_steps = 240;
+int i_curr_steps = 3;
 typedef struct _frame
 {
-	float Gorila_MovX,  Gorila_MovXInc;
+	float	Gorila_MovX,
+			Gorila_MovXInc;
+	float	Gorila_MovY,
+			Gorila_MovYInc;
+	float	Gorila_MovZ,
+			Gorila_MovZInc;
+	float	Gorila_MovCuerpo,
+			Gorila_MovCuerpoInc;
+	float	Gorila_MovBrazo,
+			Gorila_MovBrazoInc;
+	float	Gorila_MovManoL,
+			Gorila_MovManoLInc;
+	float	Gorila_MovManoR,
+			Gorila_MovManoRInc;
 	//Variables para GUARDAR Key Frames
 	/*
 	float movAvion_x;		//Variable para PosicionX
@@ -258,8 +281,9 @@ typedef struct _frame
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 0;			//introducir datos
-bool play = false;
+int FrameIndex = 3;			//introducir datos
+
+bool start = false, play = false;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -268,6 +292,12 @@ void saveFrame(void) //tecla L
 	printf("frameindex %d\n", FrameIndex);
 
 	KeyFrame[FrameIndex].Gorila_MovX = Gorila_MovX;
+	KeyFrame[FrameIndex].Gorila_MovY = Gorila_MovY;
+	KeyFrame[FrameIndex].Gorila_MovZ = Gorila_MovZ;
+	KeyFrame[FrameIndex].Gorila_MovCuerpo = Gorila_MovCuerpo;
+	KeyFrame[FrameIndex].Gorila_MovBrazo = Gorila_MovBrazo;
+	KeyFrame[FrameIndex].Gorila_MovManoL = Gorila_MovManoL;
+	KeyFrame[FrameIndex].Gorila_MovManoR = Gorila_MovManoR;
 	/*
 	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
 	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
@@ -280,7 +310,15 @@ void saveFrame(void) //tecla L
 
 void resetElements(void) //Tecla 0
 {
+	/*
 	Gorila_MovX = KeyFrame[0].Gorila_MovX;
+	Gorila_MovY = KeyFrame[0].Gorila_MovY;
+	Gorila_MovZ = KeyFrame[0].Gorila_MovZ;
+	*/
+	Gorila_MovCuerpo = KeyFrame[0].Gorila_MovCuerpo;
+	Gorila_MovBrazo = KeyFrame[0].Gorila_MovBrazo;
+	Gorila_MovManoL = KeyFrame[0].Gorila_MovManoL;
+	Gorila_MovManoR = KeyFrame[0].Gorila_MovManoR;
 	/*
 	movAvion_x = KeyFrame[0].movAvion_x;
 	movAvion_y = KeyFrame[0].movAvion_y;
@@ -291,6 +329,12 @@ void resetElements(void) //Tecla 0
 void interpolation(void)
 {
 	KeyFrame[playIndex].Gorila_MovXInc = (KeyFrame[playIndex + 1].Gorila_MovX - KeyFrame[playIndex].Gorila_MovX) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovYInc = (KeyFrame[playIndex + 1].Gorila_MovY - KeyFrame[playIndex].Gorila_MovY) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovZInc = (KeyFrame[playIndex + 1].Gorila_MovZ - KeyFrame[playIndex].Gorila_MovZ) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovCuerpoInc = (KeyFrame[playIndex + 1].Gorila_MovCuerpo - KeyFrame[playIndex].Gorila_MovCuerpo) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovBrazoInc = (KeyFrame[playIndex + 1].Gorila_MovBrazo - KeyFrame[playIndex].Gorila_MovBrazo) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovManoLInc = (KeyFrame[playIndex + 1].Gorila_MovManoL - KeyFrame[playIndex].Gorila_MovManoL) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovManoRInc = (KeyFrame[playIndex + 1].Gorila_MovManoR - KeyFrame[playIndex].Gorila_MovManoR) / i_max_steps;
 	/*
 	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
 	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
@@ -302,6 +346,20 @@ void interpolation(void)
 
 void animate(void)
 {
+	if (!start) {
+		resetElements();
+		//First Interpolation				
+		interpolation();
+		//play = true;
+		playIndex = 0;
+		i_curr_steps = 0;
+		//printf("Frame index= %d\n", FrameIndex);
+		//printf("termino la animacion\n");
+		playIndex = 0;
+		//play = false;
+		start = true;
+		play = true;
+	}
 	//Movimiento del objeto con barra espaciadora
 	if (play)
 	{
@@ -311,10 +369,16 @@ void animate(void)
 			printf("playindex : %d\n", playIndex);
 			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
 			{
-				printf("Frame index= %d\n", FrameIndex);
-				printf("termino la animacion\n");
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				//play = true;
 				playIndex = 0;
-				play = false;
+				i_curr_steps = 0;
+				//printf("Frame index= %d\n", FrameIndex);
+				//printf("termino la animacion\n");
+				playIndex = 0;
+				//play = false;
 			}
 			else //Interpolación del próximo cuadro
 			{
@@ -327,7 +391,15 @@ void animate(void)
 		else
 		{
 			//Dibujar Animación
-			Gorila_MovX += KeyFrame[playIndex].Gorila_MovXInc;
+			Gorila_MovX = KeyFrame[playIndex].Gorila_MovX;
+			Gorila_MovY = KeyFrame[playIndex].Gorila_MovY;
+			Gorila_MovZ = KeyFrame[playIndex].Gorila_MovZ;
+			Gorila_MovCuerpo += KeyFrame[playIndex].Gorila_MovCuerpoInc;
+			Gorila_MovBrazo += KeyFrame[playIndex].Gorila_MovBrazoInc;
+			Gorila_MovManoL += KeyFrame[playIndex].Gorila_MovManoLInc;
+			Gorila_MovManoR += KeyFrame[playIndex].Gorila_MovManoRInc;
+
+			i_curr_steps++;
 			/*
 			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
 			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
@@ -369,7 +441,7 @@ int main()
 	Domo_Interior = Texture("Textures/Domo_interior");
 
 	Tierra_Texture = Texture("Textures/Earth.jpg");
-	
+
 	//Texturas Gorila
 	//GorilaTexture = Texture("Textures/Body-TM_u0_v0.png");
 	//GorilaTexture.LoadTextureA();
@@ -388,8 +460,8 @@ int main()
 	Mariposa.LoadModel("Models/mariposa.obj");
 	Lampara = Model();
 	Lampara.LoadModel("Models/lampara.obj");
-	
-	
+
+
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
 
@@ -429,6 +501,9 @@ int main()
 	PieRGorila = Model();
 	PieRGorila.LoadModel("Models/Gorila/PieR.obj");
 
+	Pivote = Model();
+	Pivote.LoadModel("Models/Gorila/pivote.obj");
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/majesty_lf.tga");
@@ -447,7 +522,7 @@ int main()
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.6f, 0.6f,
 		0.0f, -1.0f, 0.0f);
-	
+
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
@@ -490,14 +565,82 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		5.0f);
 	spotLightCount++;
-	
-	//se crean mas luces puntuales y spotlight 
+
+	//se crean mas luces puntuales y spotlight
 
 	*/
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+
+	//KeyFrames Guardados
+
+	KeyFrame[0].Gorila_MovX = 13.8000006;
+	KeyFrame[0].Gorila_MovY = 1.5;
+	KeyFrame[0].Gorila_MovZ = 10.800004;
+	KeyFrame[0].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[0].Gorila_MovBrazo = -61.499893;
+	KeyFrame[0].Gorila_MovManoL = -130.800568;
+	KeyFrame[0].Gorila_MovManoR = 52.499916;
+
+	KeyFrame[1].Gorila_MovX = 13.8000006;
+	KeyFrame[1].Gorila_MovY = 1.5;
+	KeyFrame[1].Gorila_MovZ = 10.800004;
+	KeyFrame[1].Gorila_MovCuerpo = 6.600;
+	KeyFrame[1].Gorila_MovBrazo = -61.499893;
+	KeyFrame[1].Gorila_MovManoL = -61.499897;
+	KeyFrame[1].Gorila_MovManoR = 122.400482;
+
+	KeyFrame[2].Gorila_MovX = 13.8000006;
+	KeyFrame[2].Gorila_MovY = 1.5;
+	KeyFrame[2].Gorila_MovZ = 10.800004;
+	KeyFrame[2].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[2].Gorila_MovBrazo = -61.499893;
+	KeyFrame[2].Gorila_MovManoL = -130.800568;
+	KeyFrame[2].Gorila_MovManoR = 52.499916;
+
+	/*
+	//---------PARA TENER KEYFRAMES GUARDADOS NO VOLATILES QUE SIEMPRE SE UTILIZARAN SE DECLARAN AQUÍ
+
+	KeyFrame[0].movAvion_x = 0.0f;
+	KeyFrame[0].movAvion_y = 0.0f;
+	KeyFrame[0].giroAvion = 0;
+
+
+	KeyFrame[1].movAvion_x = -1.0f;
+	KeyFrame[1].movAvion_y = 2.0f;
+	KeyFrame[1].giroAvion = 0;
+
+
+	KeyFrame[2].movAvion_x = -2.0f;
+	KeyFrame[2].movAvion_y = 0.0f;
+	KeyFrame[2].giroAvion = 0;
+
+
+	KeyFrame[3].movAvion_x = -3.0f;
+	KeyFrame[3].movAvion_y = -2.0f;
+	KeyFrame[3].giroAvion = 0;
+
+
+	KeyFrame[4].movAvion_x = -3.0f;
+	KeyFrame[4].movAvion_y = -2.0f;
+	KeyFrame[4].giroAvion = 180.0f;
+
+	KeyFrame[5].movAvion_x = 0.0f;
+	KeyFrame[5].movAvion_y = 0.0f;
+	KeyFrame[5].giroAvion = 180.0;
+
+	KeyFrame[6].movAvion_x = 0.0f;
+	KeyFrame[6].movAvion_y = 0.0f;
+	KeyFrame[6].giroAvion = 0.0f;
+
+	*/
+
+	//Se agregan nuevos frames 
+	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
+	printf("3.-Presiona L para guardar frame\n4.-Presiona P para habilitar guardar nuevo frame\n5.-Presiona 1 para mover en X\n6.-Presiona 2 para habilitar mover en X");
+
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -510,7 +653,9 @@ int main()
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
-
+		//para keyframes
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -687,70 +832,100 @@ int main()
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(Gorila_MovX, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
-		tmpCaderaGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-		//GorilaTexture.UseTexture();
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::translate(model, glm::vec3(Gorila_MovX, Gorila_MovY, Gorila_MovZ));
+		tmpRotGorila = model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, 1.9f, 0.0f));
+		tmpCaderaGorila = model = glm::rotate(model, glm::radians(Gorila_MovCuerpo), glm::vec3(1.0f, 0.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, -1.9f, 0.0f));
+		//glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CaderaGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f,0.0f,0.0f));
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f,-1.9f,0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 2.10f, 0.0f));
+		tmpCuerpoGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, -2.10f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpAnteBrazoLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.7f, 3.899f, -0.3f));
+		tmpAnteBrazoLGorila = model = glm::rotate(model, glm::radians(Gorila_MovBrazo), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.7f,-3.899f, 0.3f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AnteBrazoLGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpAnteBrazoRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.7f, 3.899f, -0.3f));
+		tmpAnteBrazoRGorila = model = glm::rotate(model, glm::radians(Gorila_MovBrazo), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.7f, -3.899f, 0.3f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AnteBrazoRGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpRotGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpMusloLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MusloLGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpRotGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpMusloRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MusloRGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaGorila.RenderModel();
 
-		model = glm::translate(tmpAnteBrazoLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpAnteBrazoLGorila, glm::vec3(-0.7f, -3.899f, 0.3f));
+		model = glm::translate(model, glm::vec3(1.7f, 3.199f, -0.50f));
+		model = glm::rotate(model, glm::radians(Gorila_MovManoL), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-1.7f, -3.199f, 0.50f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BrazoLGorila.RenderModel();
 
-		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.7f, -3.899f, 0.3f));
+		model = glm::translate(model, glm::vec3(-1.7f, 3.199f, -0.50f));
+		model = glm::rotate(model, glm::radians(Gorila_MovManoR), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(1.7f, -3.199f, 0.50f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BrazoRGorila.RenderModel();
 
 		model = glm::translate(tmpMusloLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpPiernaLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PiernaLGorila.RenderModel();
 
 		model = glm::translate(tmpMusloRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpPiernaRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PiernaRGorila.RenderModel();
 
 		model = glm::translate(tmpPiernaLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PieLGorila.RenderModel();
 
 		model = glm::translate(tmpPiernaRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PieRGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpRotGorila, glm::vec3(Gorila_MovX, Gorila_MovY, Gorila_MovZ));
+		//model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CabezaGorila.RenderModel();
+		//Pivote.RenderModel();
 
 		/*
 		//Instancia del coche 
@@ -830,9 +1005,35 @@ int main()
 
 void inputKeyframes(bool* keys)
 {
-	if (keys[GLFW_KEY_J] == GLFW_PRESS) {
-	Gorila_MovX++;
-	}
+	if (keys[GLFW_KEY_J])
+		Gorila_MovX = (mainWindow.getGorila_MovX());
+	if (keys[GLFW_KEY_L])
+		Gorila_MovX = (mainWindow.getGorila_MovX());
+	if (keys[GLFW_KEY_I])
+		Gorila_MovY = (mainWindow.getGorila_MovY());
+	if (keys[GLFW_KEY_K])
+		Gorila_MovY = (mainWindow.getGorila_MovY());
+	if (keys[GLFW_KEY_Y])
+		Gorila_MovZ = (mainWindow.getGorila_MovZ());
+	if (keys[GLFW_KEY_H])
+		Gorila_MovZ = (mainWindow.getGorila_MovZ());
+	if (keys[GLFW_KEY_1])
+		Gorila_MovCuerpo = (mainWindow.getGorila_MovCuerpo());
+	if (keys[GLFW_KEY_2])
+		Gorila_MovCuerpo = (mainWindow.getGorila_MovCuerpo());
+	if (keys[GLFW_KEY_3])
+		Gorila_MovBrazo = (mainWindow.getGorila_MovBrazo());
+	if (keys[GLFW_KEY_4])
+		Gorila_MovBrazo = (mainWindow.getGorila_MovBrazo());
+	if (keys[GLFW_KEY_5])
+		Gorila_MovManoL = (mainWindow.getGorila_MovManoL());
+	if (keys[GLFW_KEY_6])
+		Gorila_MovManoL = (mainWindow.getGorila_MovManoL());
+	if (keys[GLFW_KEY_7])
+		Gorila_MovManoR = (mainWindow.getGorila_MovManoR());
+	if (keys[GLFW_KEY_8])
+		Gorila_MovManoR = (mainWindow.getGorila_MovManoR());
+
 	if (keys[GLFW_KEY_SPACE])
 	{
 		if (reproduciranimacion < 1)
@@ -867,12 +1068,18 @@ void inputKeyframes(bool* keys)
 		}
 	}
 
-	if (keys[GLFW_KEY_L])
+	if (keys[GLFW_KEY_M])
 	{
 		if (guardoFrame < 1)
 		{
 			saveFrame();
 			printf("Gorila_MovX es: %f\n", Gorila_MovX);
+			printf("Gorila_MovY es: %f\n", Gorila_MovY);
+			printf("Gorila_MovZ es: %f\n", Gorila_MovZ);
+			printf("Gorila_MovCuerpo es: %f\n", Gorila_MovCuerpo);
+			printf("Gorila_MovBrazo es: %f\n", Gorila_MovBrazo);
+			printf("Gorila_MovManoL es: %f\n", Gorila_MovManoL);
+			printf("Gorila_MovManoR es: %f\n", Gorila_MovManoR);
 			//printf("movAvion_y es: %f\n", movAvion_y);
 			printf("presiona P para habilitar guardar otro frame'\n");
 			guardoFrame++;
@@ -885,29 +1092,6 @@ void inputKeyframes(bool* keys)
 		{
 			guardoFrame = 0;
 			printf("Ya puedes guardar otro frame presionando la tecla L'\n");
-		}
-	}
-
-
-	if (keys[GLFW_KEY_1])
-	{
-		if (ciclo < 1)
-		{
-			//printf("movAvion_x es: %f\n", movAvion_x);
-			Gorila_MovX += 1.0f;
-			printf("\n Gorila_MovX es: %f\n", Gorila_MovX);
-			ciclo++;
-			ciclo2 = 0;
-			printf("\n Presiona la tecla 2 para poder habilitar la variable\n");
-		}
-
-	}
-	if (keys[GLFW_KEY_2])
-	{
-		if (ciclo2 < 1 && ciclo>0)
-		{
-			ciclo = 0;
-			printf("\n Ya puedes modificar tu variable presionando la tecla 1\n");
 		}
 	}
 }

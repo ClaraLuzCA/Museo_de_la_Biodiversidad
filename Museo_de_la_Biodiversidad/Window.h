@@ -14,6 +14,13 @@ public:
 	GLfloat getXChange();
 	GLfloat getYChange();
 	GLfloat getmuevex() { return muevex; }
+	GLfloat getGorila_MovX() { return Gorila_MovX; }
+	GLfloat getGorila_MovY() { return Gorila_MovY; }
+	GLfloat getGorila_MovZ() { return Gorila_MovZ; }
+	GLfloat getGorila_MovCuerpo() { return Gorila_MovCuerpo; }
+	GLfloat getGorila_MovBrazo() { return Gorila_MovBrazo; }
+	GLfloat getGorila_MovManoL() { return Gorila_MovManoL; }
+	GLfloat getGorila_MovManoR() { return Gorila_MovManoR; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -31,6 +38,13 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	GLfloat muevex;
+	GLfloat Gorila_MovX;
+	GLfloat Gorila_MovY;
+	GLfloat Gorila_MovZ;
+	GLfloat Gorila_MovCuerpo;
+	GLfloat Gorila_MovBrazo;
+	GLfloat Gorila_MovManoL;
+	GLfloat Gorila_MovManoR;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
