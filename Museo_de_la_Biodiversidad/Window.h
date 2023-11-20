@@ -14,13 +14,16 @@ public:
 	GLfloat getXChange();
 	GLfloat getYChange();
 	GLfloat getmuevex() { return muevex; }
-	GLfloat getGorila_MovX() { return Gorila_MovX; }
-	GLfloat getGorila_MovY() { return Gorila_MovY; }
-	GLfloat getGorila_MovZ() { return Gorila_MovZ; }
-	GLfloat getGorila_MovCuerpo() { return Gorila_MovCuerpo; }
-	GLfloat getGorila_MovBrazo() { return Gorila_MovBrazo; }
-	GLfloat getGorila_MovManoL() { return Gorila_MovManoL; }
-	GLfloat getGorila_MovManoR() { return Gorila_MovManoR; }
+	GLfloat getCamello_MovX() { return Camello_MovX; }
+	GLfloat getCamello_MovY() { return Camello_MovY; }
+	GLfloat getCamello_MovZ() { return Camello_MovZ; }
+	GLfloat getCamello_MovCuerpo() { return Camello_MovCuerpo; }
+	GLfloat getCamello_MovRodillaD() { return Camello_MovRodillaD; }
+	GLfloat getCamello_MovRodillaT() { return Camello_MovRodillaT; }
+	GLfloat getCamello_MovPiernaD() { return Camello_MovPiernaD; }
+	GLfloat getCamello_MovPiernaT() { return Camello_MovPiernaT; }
+	GLfloat getCamello_MovCuello() { return Camello_MovCuello; }
+	GLfloat getCamello_MovCabeza() { return Camello_MovCabeza; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -38,13 +41,17 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	GLfloat muevex;
-	GLfloat Gorila_MovX;
-	GLfloat Gorila_MovY;
-	GLfloat Gorila_MovZ;
-	GLfloat Gorila_MovCuerpo;
-	GLfloat Gorila_MovBrazo;
-	GLfloat Gorila_MovManoL;
-	GLfloat Gorila_MovManoR;
+	GLfloat Camello_MovX;
+	GLfloat Camello_MovY;
+	GLfloat Camello_MovZ;
+	GLfloat Camello_MovCuerpo;
+	GLfloat Camello_MovRodillaD;
+	GLfloat Camello_MovRodillaT;
+	GLfloat Camello_MovPiernaD;
+	GLfloat Camello_MovPiernaT;
+	GLfloat Camello_MovCuello;
+	GLfloat Camello_MovCabeza;
+
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
