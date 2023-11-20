@@ -58,6 +58,8 @@ Texture Domo_Interior;
 Texture Tierra_Texture;
 Texture MariposaTexture;
 Texture GorilaTexture;
+//Tigre
+Texture TigreTexture;
 
 Model Kitt_M;
 Model Llanta_M;
@@ -68,6 +70,10 @@ Model Domos;
 Model Tierra;
 Model Mariposa;
 Model Lampara;
+Model Helecho;
+Model Monstera;
+//Tigre
+Model Tigre;
 
 // Gorila
 Model CabezaGorila;
@@ -114,12 +120,12 @@ glm::mat4 tmpRodillaTCamello = glm::mat4(1.0f);
 glm::mat4 tmpRodillaDCamello = glm::mat4(1.0f);
 glm::mat4 tmpCuelloCamello = glm::mat4(1.0f);
 
+
 Skybox skybox;
 
 //materiales
 Material Material_brillante;
 Material Material_opaco;
-
 
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
@@ -490,8 +496,11 @@ int main()
 	pisoTexture.LoadTextureA();
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
-	MariposaTexture = Texture("Texture/1.jpg");
+	MariposaTexture = Texture("Textures/1.jpg");
 	MariposaTexture.LoadTexture();
+	//Cargamos textura del tigre
+	TigreTexture = Texture("Textures/Tigre.jpeg");
+	TigreTexture.LoadTextureA();
 
 	Domo_Exterior = Texture("Textures/Domo_exterior");
 	Domo_Interior = Texture("Textures/Domo_interior");
@@ -516,8 +525,16 @@ int main()
 	Mariposa.LoadModel("Models/mariposa.obj");
 	Lampara = Model();
 	Lampara.LoadModel("Models/lampara.obj");
+	Helecho = Model();
+	Helecho.LoadModel("Models/helecho.obj");
+	Monstera = Model();
+	Monstera.LoadModel("Models/monsterra2.obj");
 
-	//Gorila
+	//Cargamos Tigre
+	Tigre = Model();
+	Tigre.LoadModel("Models/TigreLoop.fbx");
+  
+  //Gorila
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
 
@@ -607,7 +624,6 @@ int main()
 
 	Material_brillante = Material(4.0f, 256);//CEF BRILLO
 	Material_opaco = Material(0.3f, 4);
-
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -856,7 +872,6 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
@@ -866,8 +881,6 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-
-
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -954,36 +967,36 @@ int main()
 		//LAMPARAS
 		//sala1
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(20.0f, 7.5f, 35.0f));
-		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::translate(model, glm::vec3(20.0f, 7.5f, 45.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		model = glm::rotate(model, 225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(90.0f, 7.5f, 35.0f));
-		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::translate(model, glm::vec3(90.0f, 7.5f, 45.0f));
+		model = glm::scale(model, glm::vec3(0.20f, 0.20f, 0.20f));
 		model = glm::rotate(model, 115 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(90.0f, 7.5f, -35.0f));
-		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::scale(model, glm::vec3(0.20f, 0.20f, 0.20f));
 		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		Lampara.RenderModel();
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(20.0f, 7.5f, -35.0f));
-		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::scale(model, glm::vec3(0.20f, 0.20f, 0.20f));
 		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
 		//sala2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-120.0f, 7.5f, 35.0f));
-		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.10f, 0.10f));
 		model = glm::rotate(model, 225 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
@@ -1008,7 +1021,196 @@ int main()
 		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
+    
+		//Helechos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 7.5f, 35.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
 
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
+		modelaux = model;
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(20.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(30.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(40.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 0.0f));
+		modelaux = model;
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-40.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f, 7.5f, -35.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 0.9f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
+		modelaux = model;
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(20.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(30.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(40.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(50.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, 0.0f));
+		modelaux = model;
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		Helecho.RenderModel();
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-40.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Helecho.RenderModel();
+
+		//Monstera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(100.0f, 7.5f, 45.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(35.0f, 7.5f, 45.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(65.0f, 7.5f, 60.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		//Monstera
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(100.0f, 7.5f, -45.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(35.0f, 7.5f, -45.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(65.0f, 7.5f, -62.0f));
+		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Monstera.RenderModel();
+
+		//Tigre
+		float angleInDegrees = 180.0f; // Ángulo de rotación en grados
+		float angleInRadians = glm::radians(angleInDegrees); // Convertir a radianes
+		// Crear la matriz de transformación
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-65.0f, 7.5f, 40.0f));
+		model = glm::rotate(model, angleInRadians, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		// Enviar la matriz al shader y renderizar el modelo
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		TigreTexture.UseTexture();
+		Tigre.RenderModel();
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
