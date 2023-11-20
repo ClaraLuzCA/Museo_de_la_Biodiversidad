@@ -57,6 +57,8 @@ Texture Domo_Interior;
 Texture Tierra_Texture;
 Texture MariposaTexture;
 Texture GorilaTexture;
+//Tigre
+Texture TigreTexture;
 
 Model Kitt_M;
 Model Llanta_M;
@@ -69,6 +71,8 @@ Model Mariposa;
 Model Lampara;
 Model Helecho;
 Model Monstera;
+//Tigre
+Model Tigre;
 
 // Gorila
 Model CabezaGorila;
@@ -93,12 +97,12 @@ glm::mat4 tmpMusloRGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaLGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaRGorila = glm::mat4(1.0f);
 
+
 Skybox skybox;
 
 //materiales
 Material Material_brillante;
 Material Material_opaco;
-
 
 //Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
@@ -357,14 +361,17 @@ int main()
 	pisoTexture.LoadTextureA();
 	AgaveTexture = Texture("Textures/Agave.tga");
 	AgaveTexture.LoadTextureA();
-	MariposaTexture = Texture("Texture/1.jpg");
+	MariposaTexture = Texture("Textures/1.jpg");
 	MariposaTexture.LoadTexture();
+	//Cargamos textura del tigre
+	TigreTexture = Texture("Textures/Tigre.jpeg");
+	TigreTexture.LoadTextureA();
 
 	Domo_Exterior = Texture("Textures/Domo_exterior");
 	Domo_Interior = Texture("Textures/Domo_interior");
 
 	Tierra_Texture = Texture("Textures/Earth.jpg");
-	
+
 	//Texturas Gorila
 	//GorilaTexture = Texture("Textures/Body-TM_u0_v0.png");
 	//GorilaTexture.LoadTextureA();
@@ -387,8 +394,10 @@ int main()
 	Helecho.LoadModel("Models/helecho.obj");
 	Monstera = Model();
 	Monstera.LoadModel("Models/monsterra2.obj");
-	
-	
+
+	//Cargamos Tigre
+	Tigre = Model();
+	Tigre.LoadModel("Models/TigreLoop.fbx");
 	
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
@@ -441,7 +450,6 @@ int main()
 
 	Material_brillante = Material(4.0f, 256);//CEF BRILLO
 	Material_opaco = Material(0.3f, 4);
-
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
@@ -530,7 +538,6 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
@@ -540,8 +547,6 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
 		shaderList[0].SetSpotLights(spotLights, spotLightCount);
-
-
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -860,8 +865,19 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Monstera.RenderModel();
 
+		//Tigre
+		float angleInDegrees = 180.0f; // Ángulo de rotación en grados
+		float angleInRadians = glm::radians(angleInDegrees); // Convertir a radianes
+		// Crear la matriz de transformación
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-65.0f, 7.5f, 40.0f));
+		model = glm::rotate(model, angleInRadians, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		// Enviar la matriz al shader y renderizar el modelo
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		TigreTexture.UseTexture();
+		Tigre.RenderModel();
 
-		
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
