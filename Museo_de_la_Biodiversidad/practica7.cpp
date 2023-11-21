@@ -42,6 +42,7 @@ const float toRadians = 3.14159265f / 180.0f;
 GLfloat earthRotationAngle = 0.0f;
 
 //Variables para KeyFrames
+float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
 
 Window mainWindow;
 std::vector<Mesh*> meshList;
@@ -98,14 +99,36 @@ Model PiernaRGorila;
 Model PiernaLGorila;
 Model PieRGorila;
 Model PieLGorila;
+Model Pivote;
 
+//Camello
+Model CabezaCamello;
+Model CuerpoCamello;
+Model RodillaDLCamello;
+Model RodillaDRCamello;
+Model RodillaTLCamello;
+Model RodillaTRCamello;
+Model PiernaDLCamello;
+Model PiernaDRCamello;
+Model PiernaTLCamello;
+Model PiernaTRCamello;
+Model CuelloCamello;
+
+glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
+glm::mat4 tmpCuerpoGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoLGorila = glm::mat4(1.0f);
 glm::mat4 tmpAnteBrazoRGorila = glm::mat4(1.0f);
 glm::mat4 tmpMusloLGorila = glm::mat4(1.0f);
 glm::mat4 tmpMusloRGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaLGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaRGorila = glm::mat4(1.0f);
+//Camello
+//glm::mat4 tmpRotCamello = glm::mat4(1.0f);
+glm::mat4 tmpCuerpoCamello = glm::mat4(1.0f);
+glm::mat4 tmpRodillaTCamello = glm::mat4(1.0f);
+glm::mat4 tmpRodillaDCamello = glm::mat4(1.0f);
+glm::mat4 tmpCuelloCamello = glm::mat4(1.0f);
 
 Skybox skybox;
 
@@ -240,31 +263,73 @@ bool animacion = false;
 
 //NEW// Keyframes
 
-/*
-float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
-float	movAvion_x = 0.0f, movAvion_y = 0.0f;
-float giroAvion = 0;
-*/
+float	Gorila_MovX = 13.8000006,
+		Gorila_MovY = 1.5f,
+		Gorila_MovZ = 10.800004f,
+		Gorila_MovCadera = 0.0f,
+		Gorila_MovCuerpo = 0.0f,
+		Gorila_MovBrazo = 0.0f,
+		Gorila_MovManoL = 0.0f,
+		Gorila_MovManoR = 0.0f;
+
+float	Camello_MovX = 0.0f,
+		Camello_MovY = 0.0f,
+		Camello_MovZ = 0.0f,
+		Camello_MovCuerpo = 0.0f,
+		Camello_MovRodillaT = 0.0f,
+		Camello_MovRodillaD = 0.0f,
+		Camello_MovCuello = 0.0f,
+		Camello_MovCabeza = 0.0f,
+		Camello_MovPiernaD = 0.0f,
+		Camello_MovPiernaT = 0.0f;
 
 #define MAX_FRAMES 100
-int i_max_steps = 90;
-int i_curr_steps = 0;
+int i_max_steps = 240;
+int i_curr_steps = 6;
 typedef struct _frame
 {
-	//Variables para GUARDAR Key Frames
-	/*
-	float movAvion_x;		//Variable para PosicionX
-	float movAvion_y;		//Variable para PosicionY
-	float movAvion_xInc;		//Variable para IncrementoX
-	float movAvion_yInc;		//Variable para IncrementoY
-	float giroAvion;
-	float giroAvionInc;
-	*/
+	float	Gorila_MovX,
+			Gorila_MovXInc;
+	float	Gorila_MovY,
+			Gorila_MovYInc;
+	float	Gorila_MovZ,
+			Gorila_MovZInc;
+	float	Gorila_MovCuerpo,
+			Gorila_MovCuerpoInc;
+	float	Gorila_MovBrazo,
+			Gorila_MovBrazoInc;
+	float	Gorila_MovManoL,
+			Gorila_MovManoLInc;
+	float	Gorila_MovManoR,
+			Gorila_MovManoRInc;
+
+	float	Camello_MovX,
+			Camello_MovXInc;
+	float	Camello_MovY,
+			Camello_MovYInc;
+	float	Camello_MovZ,
+			Camello_MovZInc;
+	float	Camello_MovCuerpo,
+			Camello_MovCuerpoInc;
+	float	Camello_MovRodillaD,
+			Camello_MovRodillaDInc;
+	float	Camello_MovRodillaT,
+			Camello_MovRodillaTInc;
+	float	Camello_MovPiernaD,
+			Camello_MovPiernaDInc;
+	float	Camello_MovPiernaT,
+			Camello_MovPiernaTInc;
+	float	Camello_MovCuello,
+			Camello_MovCuelloInc;
+	float	Camello_MovCabeza,
+			Camello_MovCabezaInc;
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 0;			//introducir datos
-bool play = false;
+int FrameIndex = 6;			//introducir datos
+
+//start debe ser false para que inicie solo
+bool start = false, play = false;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -273,48 +338,105 @@ void saveFrame(void) //tecla L
 	printf("frameindex %d\n", FrameIndex);
 
 	/*
-	KeyFrame[FrameIndex].movAvion_x = movAvion_x;
-	KeyFrame[FrameIndex].movAvion_y = movAvion_y;
-	KeyFrame[FrameIndex].giroAvion = giroAvion;//completar
-	//no volatil, agregar una forma de escribir a un archivo para guardar los frames
-
+	KeyFrame[FrameIndex].Gorila_MovX = Gorila_MovX;
+	KeyFrame[FrameIndex].Gorila_MovY = Gorila_MovY;
+	KeyFrame[FrameIndex].Gorila_MovZ = Gorila_MovZ;
+	KeyFrame[FrameIndex].Gorila_MovCuerpo = Gorila_MovCuerpo;
+	KeyFrame[FrameIndex].Gorila_MovBrazo = Gorila_MovBrazo;
+	KeyFrame[FrameIndex].Gorila_MovManoL = Gorila_MovManoL;
+	KeyFrame[FrameIndex].Gorila_MovManoR = Gorila_MovManoR;
 	*/
+
+	KeyFrame[FrameIndex].Camello_MovCuerpo = Camello_MovCuerpo;
+	KeyFrame[FrameIndex].Camello_MovCuello = Camello_MovCuello;
+	KeyFrame[FrameIndex].Camello_MovCabeza = Camello_MovCabeza;
+	KeyFrame[FrameIndex].Camello_MovRodillaD = Camello_MovRodillaD;
+	KeyFrame[FrameIndex].Camello_MovRodillaT = Camello_MovRodillaT;
+	KeyFrame[FrameIndex].Camello_MovPiernaT = Camello_MovPiernaT;
+	KeyFrame[FrameIndex].Camello_MovPiernaD = Camello_MovPiernaD;
+
+
 	FrameIndex++;
 }
 
 void resetElements(void) //Tecla 0
 {
 	/*
-	movAvion_x = KeyFrame[0].movAvion_x;
-	movAvion_y = KeyFrame[0].movAvion_y;
-	giroAvion = KeyFrame[0].giroAvion;
+	Gorila_MovX = KeyFrame[0].Gorila_MovX;
+	Gorila_MovY = KeyFrame[0].Gorila_MovY;
+	Gorila_MovZ = KeyFrame[0].Gorila_MovZ;
 	*/
+	Gorila_MovCuerpo = KeyFrame[0].Gorila_MovCuerpo;
+	Gorila_MovBrazo = KeyFrame[0].Gorila_MovBrazo;
+	Gorila_MovManoL = KeyFrame[0].Gorila_MovManoL;
+	Gorila_MovManoR = KeyFrame[0].Gorila_MovManoR;
+	
+	Camello_MovCuerpo = KeyFrame[0].Camello_MovCuerpo;
+	Camello_MovCuello = KeyFrame[0].Camello_MovCuello;
+	Camello_MovCabeza = KeyFrame[0].Camello_MovCabeza;
+	Camello_MovRodillaD = KeyFrame[0].Camello_MovRodillaD;
+	Camello_MovRodillaT = KeyFrame[0].Camello_MovRodillaT;
+	Camello_MovPiernaD = KeyFrame[0].Camello_MovPiernaD;
+	Camello_MovPiernaT = KeyFrame[0].Camello_MovPiernaT;
 }
 
 void interpolation(void)
 {
-	/*
-	KeyFrame[playIndex].movAvion_xInc = (KeyFrame[playIndex + 1].movAvion_x - KeyFrame[playIndex].movAvion_x) / i_max_steps;
-	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
-	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
-	*/
+	KeyFrame[playIndex].Gorila_MovXInc = (KeyFrame[playIndex + 1].Gorila_MovX - KeyFrame[playIndex].Gorila_MovX) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovYInc = (KeyFrame[playIndex + 1].Gorila_MovY - KeyFrame[playIndex].Gorila_MovY) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovZInc = (KeyFrame[playIndex + 1].Gorila_MovZ - KeyFrame[playIndex].Gorila_MovZ) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovCuerpoInc = (KeyFrame[playIndex + 1].Gorila_MovCuerpo - KeyFrame[playIndex].Gorila_MovCuerpo) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovBrazoInc = (KeyFrame[playIndex + 1].Gorila_MovBrazo - KeyFrame[playIndex].Gorila_MovBrazo) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovManoLInc = (KeyFrame[playIndex + 1].Gorila_MovManoL - KeyFrame[playIndex].Gorila_MovManoL) / i_max_steps;
+	KeyFrame[playIndex].Gorila_MovManoRInc = (KeyFrame[playIndex + 1].Gorila_MovManoR - KeyFrame[playIndex].Gorila_MovManoR) / i_max_steps;
+	// Camello
+	KeyFrame[playIndex].Camello_MovXInc = (KeyFrame[playIndex + 1].Camello_MovX - KeyFrame[playIndex].Camello_MovX) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovYInc = (KeyFrame[playIndex + 1].Camello_MovY - KeyFrame[playIndex].Camello_MovY) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovZInc = (KeyFrame[playIndex + 1].Camello_MovZ - KeyFrame[playIndex].Camello_MovZ) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovCuerpoInc = (KeyFrame[playIndex + 1].Camello_MovCuerpo - KeyFrame[playIndex].Camello_MovCuerpo) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovCuelloInc = (KeyFrame[playIndex + 1].Camello_MovCuello - KeyFrame[playIndex].Camello_MovCuello) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovCabezaInc = (KeyFrame[playIndex + 1].Camello_MovCabeza - KeyFrame[playIndex].Camello_MovCabeza) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovRodillaDInc = (KeyFrame[playIndex + 1].Camello_MovRodillaD - KeyFrame[playIndex].Camello_MovRodillaD) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovRodillaTInc = (KeyFrame[playIndex + 1].Camello_MovRodillaT - KeyFrame[playIndex].Camello_MovRodillaT) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovPiernaDInc = (KeyFrame[playIndex + 1].Camello_MovPiernaD - KeyFrame[playIndex].Camello_MovPiernaD) / i_max_steps;
+	KeyFrame[playIndex].Camello_MovPiernaTInc = (KeyFrame[playIndex + 1].Camello_MovPiernaT - KeyFrame[playIndex].Camello_MovPiernaT) / i_max_steps;
 }
 
 void animate(void)
 {
+	if (!start) {
+		resetElements();
+		//First Interpolation				
+		interpolation();
+		//play = true;
+		playIndex = 0;
+		i_curr_steps = 0;
+		//printf("Frame index= %d\n", FrameIndex);
+		//printf("termino la animacion\n");
+		playIndex = 0;
+		//play = false;
+		start = true;
+		play = true;
+	}
 	//Movimiento del objeto con barra espaciadora
 	if (play)
 	{
 		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
 		{
 			playIndex++;
-			printf("playindex : %d\n", playIndex);
+			//printf("playindex : %d\n", playIndex);
 			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
 			{
-				printf("Frame index= %d\n", FrameIndex);
-				printf("termino la animacion\n");
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				//play = true;
 				playIndex = 0;
-				play = false;
+				i_curr_steps = 0;
+				//printf("Frame index= %d\n", FrameIndex);
+				//printf("termino la animacion\n");
+				playIndex = 0;
+				//play = false;
 			}
 			else //Interpolación del próximo cuadro
 			{
@@ -327,12 +449,26 @@ void animate(void)
 		else
 		{
 			//Dibujar Animación
-			/*
-			movAvion_x += KeyFrame[playIndex].movAvion_xInc;
-			movAvion_y += KeyFrame[playIndex].movAvion_yInc;
-			giroAvion += KeyFrame[playIndex].giroAvionInc;
+			Gorila_MovX = KeyFrame[playIndex].Gorila_MovX;
+			Gorila_MovY = KeyFrame[playIndex].Gorila_MovY;
+			Gorila_MovZ = KeyFrame[playIndex].Gorila_MovZ;
+			Gorila_MovCuerpo += KeyFrame[playIndex].Gorila_MovCuerpoInc;
+			Gorila_MovBrazo += KeyFrame[playIndex].Gorila_MovBrazoInc;
+			Gorila_MovManoL += KeyFrame[playIndex].Gorila_MovManoLInc;
+			Gorila_MovManoR += KeyFrame[playIndex].Gorila_MovManoRInc;
+			//Camello
+			Camello_MovX = KeyFrame[playIndex].Camello_MovX;
+			Camello_MovY = KeyFrame[playIndex].Camello_MovY;
+			Camello_MovZ = KeyFrame[playIndex].Camello_MovZ;
+			Camello_MovCuerpo += KeyFrame[playIndex].Camello_MovCuerpoInc;
+			Camello_MovCuello += KeyFrame[playIndex].Camello_MovCuelloInc;
+			Camello_MovCabeza += KeyFrame[playIndex].Camello_MovCabezaInc;
+			Camello_MovRodillaD += KeyFrame[playIndex].Camello_MovRodillaDInc;
+			Camello_MovRodillaT += KeyFrame[playIndex].Camello_MovRodillaTInc;
+			Camello_MovPiernaD += KeyFrame[playIndex].Camello_MovPiernaDInc;
+			Camello_MovPiernaT += KeyFrame[playIndex].Camello_MovPiernaTInc;
+
 			i_curr_steps++;
-			*/
 		}
 
 	}
@@ -413,6 +549,8 @@ int main()
 	JunglePlant = Model();
 	JunglePlant.LoadModel("Models/ExtraPlant.fbx");
 	
+  
+  //Gorila
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
 
@@ -452,6 +590,44 @@ int main()
 	PieRGorila = Model();
 	PieRGorila.LoadModel("Models/Gorila/PieR.obj");
 
+	Pivote = Model();
+	Pivote.LoadModel("Models/Gorila/pivote.obj");
+
+	//Camello
+	CabezaCamello = Model();
+	CabezaCamello.LoadModel("Models/Camello/Cabeza.obj");
+
+	CuelloCamello = Model();
+	CuelloCamello.LoadModel("Models/Camello/Cuello.obj");
+
+	CuerpoCamello = Model();
+	CuerpoCamello.LoadModel("Models/Camello/Cuerpo.obj");
+
+	RodillaDLCamello = Model();
+	RodillaDLCamello.LoadModel("Models/Camello/DL_Rodilla.obj");
+
+	RodillaDRCamello = Model();
+	RodillaDRCamello.LoadModel("Models/Camello/DR_Rodilla.obj");
+
+	RodillaTLCamello = Model();
+	RodillaTLCamello.LoadModel("Models/Camello/TL_Rodilla.obj");
+
+	RodillaTRCamello = Model();
+	RodillaTRCamello.LoadModel("Models/Camello/TR_Rodilla.obj");
+
+	PiernaDLCamello = Model();
+	PiernaDLCamello.LoadModel("Models/Camello/DL_Pata.obj");
+
+	PiernaDRCamello = Model();
+	PiernaDRCamello.LoadModel("Models/Camello/DR_Pata.obj");
+
+	PiernaTLCamello = Model();
+	PiernaTLCamello.LoadModel("Models/Camello/TL_Pata.obj");
+
+	PiernaTRCamello = Model();
+	PiernaTRCamello.LoadModel("Models/Camello/TR_Pata.obj");
+
+
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
 	skyboxFaces.push_back("Textures/Skybox/majesty_lf.tga");
@@ -469,7 +645,7 @@ int main()
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
 		0.6f, 0.6f,
 		0.0f, -1.0f, 0.0f);
-	
+
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
@@ -512,14 +688,172 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		5.0f);
 	spotLightCount++;
-	
-	//se crean mas luces puntuales y spotlight 
+
+	//se crean mas luces puntuales y spotlight
 
 	*/
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
+
+	//KeyFrames Guardados
+
+	KeyFrame[0].Gorila_MovX = 13.8000006;
+	KeyFrame[0].Gorila_MovY = 1.5;
+	KeyFrame[0].Gorila_MovZ = 10.800004;
+	KeyFrame[0].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[0].Gorila_MovBrazo = -61.499893;
+	KeyFrame[0].Gorila_MovManoL = -130.800568;
+	KeyFrame[0].Gorila_MovManoR = 52.499916;
+
+	KeyFrame[0].Camello_MovX = -10.10002;
+	KeyFrame[0].Camello_MovY = 1.1;
+	KeyFrame[0].Camello_MovZ = 6.650007;
+	KeyFrame[0].Camello_MovCuerpo = 2.099999;
+	KeyFrame[0].Camello_MovCuello = 0.0;
+	KeyFrame[0].Camello_MovCabeza = 0.0;
+	KeyFrame[0].Camello_MovRodillaD = 0.0;
+	KeyFrame[0].Camello_MovRodillaT = 0.0;
+	KeyFrame[0].Camello_MovPiernaD = 0.0;
+	KeyFrame[0].Camello_MovPiernaT = 0.0;
+
+	KeyFrame[1].Gorila_MovX = 13.8000006;
+	KeyFrame[1].Gorila_MovY = 1.5;
+	KeyFrame[1].Gorila_MovZ = 10.800004;
+	KeyFrame[1].Gorila_MovCuerpo = 6.600;
+	KeyFrame[1].Gorila_MovBrazo = -61.499893;
+	KeyFrame[1].Gorila_MovManoL = -61.499897;
+	KeyFrame[1].Gorila_MovManoR = 122.400482;
+
+	KeyFrame[1].Camello_MovX = -10.10002;
+	KeyFrame[1].Camello_MovY = 1.1;
+	KeyFrame[1].Camello_MovZ = 6.650007;
+	KeyFrame[1].Camello_MovCuerpo = 13.200005;
+	KeyFrame[1].Camello_MovCuello = 38.699951;
+	KeyFrame[1].Camello_MovCabeza = 0.0;
+	KeyFrame[1].Camello_MovRodillaD = -77.100021;
+	KeyFrame[1].Camello_MovRodillaT = 2.70;
+	KeyFrame[1].Camello_MovPiernaD = 41.999943;
+	KeyFrame[1].Camello_MovPiernaT = 0.0;
+
+	KeyFrame[2].Gorila_MovX = 13.8000006;
+	KeyFrame[2].Gorila_MovY = 1.5;
+	KeyFrame[2].Gorila_MovZ = 10.800004;
+	KeyFrame[2].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[2].Gorila_MovBrazo = -61.499893;
+	KeyFrame[2].Gorila_MovManoL = -130.800568;
+	KeyFrame[2].Gorila_MovManoR = 52.499916;
+
+	KeyFrame[2].Camello_MovX = -10.10002;
+	KeyFrame[2].Camello_MovY = 1.1;
+	KeyFrame[2].Camello_MovZ = 6.650007;
+	KeyFrame[2].Camello_MovCuerpo = 13.200005;
+	KeyFrame[2].Camello_MovCuello = 38.699951;
+	KeyFrame[2].Camello_MovCabeza = -22.199991;
+	KeyFrame[2].Camello_MovRodillaD = -77.100021;
+	KeyFrame[2].Camello_MovRodillaT = 2.70;
+	KeyFrame[2].Camello_MovPiernaD = 41.999943;
+	KeyFrame[2].Camello_MovPiernaT = 0.0;
+
+	KeyFrame[3].Gorila_MovX = 13.8000006;
+	KeyFrame[3].Gorila_MovY = 1.5;
+	KeyFrame[3].Gorila_MovZ = 10.800004;
+	KeyFrame[3].Gorila_MovCuerpo = 6.600;
+	KeyFrame[3].Gorila_MovBrazo = -61.499893;
+	KeyFrame[3].Gorila_MovManoL = -61.499897;
+	KeyFrame[3].Gorila_MovManoR = 122.400482;
+
+	KeyFrame[3].Camello_MovX = -10.10002;
+	KeyFrame[3].Camello_MovY = 1.1;
+	KeyFrame[3].Camello_MovZ = 6.650007;
+	KeyFrame[3].Camello_MovCuerpo = 13.200005;
+	KeyFrame[3].Camello_MovCuello = 38.699951;
+	KeyFrame[3].Camello_MovCabeza = 5.100001;
+	KeyFrame[3].Camello_MovRodillaD = -77.100021;
+	KeyFrame[3].Camello_MovRodillaT = 2.70;
+	KeyFrame[3].Camello_MovPiernaD = 41.999943;
+	KeyFrame[3].Camello_MovPiernaT = 0.0;
+
+	KeyFrame[4].Gorila_MovX = 13.8000006;
+	KeyFrame[4].Gorila_MovY = 1.5;
+	KeyFrame[4].Gorila_MovZ = 10.800004;
+	KeyFrame[4].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[4].Gorila_MovBrazo = -61.499893;
+	KeyFrame[4].Gorila_MovManoL = -130.800568;
+	KeyFrame[4].Gorila_MovManoR = 52.499916;
+
+	KeyFrame[4].Camello_MovX = -10.10002;
+	KeyFrame[4].Camello_MovY = 1.1;
+	KeyFrame[4].Camello_MovZ = 6.650007;
+	KeyFrame[4].Camello_MovCuerpo = 13.200005;
+	KeyFrame[4].Camello_MovCuello = 38.699951;
+	KeyFrame[4].Camello_MovCabeza = 3.3;
+	KeyFrame[4].Camello_MovRodillaD = -77.100021;
+	KeyFrame[4].Camello_MovRodillaT = 2.70;
+	KeyFrame[4].Camello_MovPiernaD = 41.999943;
+	KeyFrame[4].Camello_MovPiernaT = 0.0;
+
+	KeyFrame[5].Gorila_MovX = 13.8000006;
+	KeyFrame[5].Gorila_MovY = 1.5;
+	KeyFrame[5].Gorila_MovZ = 10.800004;
+	KeyFrame[5].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[5].Gorila_MovBrazo = -61.499893;
+	KeyFrame[5].Gorila_MovManoL = -130.800568;
+	KeyFrame[5].Gorila_MovManoR = 52.499916;
+
+	KeyFrame[5].Camello_MovX = -10.10002;
+	KeyFrame[5].Camello_MovY = 1.1;
+	KeyFrame[5].Camello_MovZ = 6.650007;
+	KeyFrame[5].Camello_MovCuerpo = 2.099999;
+	KeyFrame[5].Camello_MovCuello = 0.0;
+	KeyFrame[5].Camello_MovCabeza = 0.0;
+	KeyFrame[5].Camello_MovRodillaD = 0.0;
+	KeyFrame[5].Camello_MovRodillaT = 0.0;
+	KeyFrame[5].Camello_MovPiernaD = 0.0;
+	KeyFrame[5].Camello_MovPiernaT = 0.0;
+
+	/*
+	//---------PARA TENER KEYFRAMES GUARDADOS NO VOLATILES QUE SIEMPRE SE UTILIZARAN SE DECLARAN AQUÍ
+
+	KeyFrame[0].movAvion_x = 0.0f;
+	KeyFrame[0].movAvion_y = 0.0f;
+	KeyFrame[0].giroAvion = 0;
+
+
+	KeyFrame[1].movAvion_x = -1.0f;
+	KeyFrame[1].movAvion_y = 2.0f;
+	KeyFrame[1].giroAvion = 0;
+
+
+	KeyFrame[2].movAvion_x = -2.0f;
+	KeyFrame[2].movAvion_y = 0.0f;
+	KeyFrame[2].giroAvion = 0;
+
+
+	KeyFrame[3].movAvion_x = -3.0f;
+	KeyFrame[3].movAvion_y = -2.0f;
+	KeyFrame[3].giroAvion = 0;
+
+
+	KeyFrame[4].movAvion_x = -3.0f;
+	KeyFrame[4].movAvion_y = -2.0f;
+	KeyFrame[4].giroAvion = 180.0f;
+
+	KeyFrame[5].movAvion_x = 0.0f;
+	KeyFrame[5].movAvion_y = 0.0f;
+	KeyFrame[5].giroAvion = 180.0;
+
+	KeyFrame[6].movAvion_x = 0.0f;
+	KeyFrame[6].movAvion_y = 0.0f;
+	KeyFrame[6].giroAvion = 0.0f;
+
+	*/
+
+	//Se agregan nuevos frames 
+	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
+	printf("3.-Presiona L para guardar frame\n4.-Presiona P para habilitar guardar nuevo frame\n5.-Presiona 1 para mover en X\n6.-Presiona 2 para habilitar mover en X");
+
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -532,7 +866,9 @@ int main()
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
-
+		//para keyframes
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -700,7 +1036,7 @@ int main()
 		model = glm::rotate(model, -45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara.RenderModel();
-
+    
 		//Helechos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 7.5f, 35.0f));
@@ -1102,50 +1438,65 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		TigreTexture.UseTexture();
 		Tigre.RenderModel();
-
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
 		model = glm::mat4(1.0);
-		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
-		tmpCaderaGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0));
-		//GorilaTexture.UseTexture();
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		model = glm::translate(model, glm::vec3(Gorila_MovX, Gorila_MovY, Gorila_MovZ));
+		tmpRotGorila = model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, 1.9f, 0.0f));
+		tmpCaderaGorila = model = glm::rotate(model, glm::radians(Gorila_MovCuerpo), glm::vec3(1.0f, 0.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, -1.9f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CaderaGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f,0.0f,0.0f));
+		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, -1.9f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 2.10f, 0.0f));
+		tmpCuerpoGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.0f, -2.10f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CuerpoGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpAnteBrazoLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.7f, 3.899f, -0.3f));
+		tmpAnteBrazoLGorila = model = glm::rotate(model, glm::radians(Gorila_MovBrazo), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.7f, -3.899f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AnteBrazoLGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
-		tmpAnteBrazoRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10f, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.7f, 3.899f, -0.3f));
+		tmpAnteBrazoRGorila = model = glm::rotate(model, glm::radians(Gorila_MovBrazo), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.7f, -3.899f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		AnteBrazoRGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpRotGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpMusloLGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MusloLGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpRotGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		tmpMusloRGorila = model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MusloRGorila.RenderModel();
 
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpCuerpoGorila, glm::vec3(0.0f, -2.10, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaGorila.RenderModel();
 
-		model = glm::translate(tmpAnteBrazoLGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpAnteBrazoLGorila, glm::vec3(-0.7f, -3.899f, 0.3f));
+		model = glm::translate(model, glm::vec3(1.7f, 3.199f, -0.50f));
+		model = glm::rotate(model, glm::radians(Gorila_MovManoL), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-1.7f, -3.199f, 0.50f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BrazoLGorila.RenderModel();
 
-		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(tmpAnteBrazoRGorila, glm::vec3(0.7f, -3.899f, 0.3f));
+		model = glm::translate(model, glm::vec3(-1.7f, 3.199f, -0.50f));
+		model = glm::rotate(model, glm::radians(Gorila_MovManoR), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(1.7f, -3.199f, 0.50f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		BrazoRGorila.RenderModel();
 
@@ -1166,11 +1517,92 @@ int main()
 		model = glm::translate(tmpPiernaRGorila, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PieRGorila.RenderModel();
-
-		model = glm::translate(tmpCaderaGorila, glm::vec3(0.0f, 0.0f, 0.0f));
+		// -------------------------------------------------------------------------------------------------------------------------
+		// Camello
+		// -------------------------------------------------------------------------------------------------------------------------
+		model = glm::mat4(1.0);
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::translate(model, glm::vec3(Camello_MovX, Camello_MovY, Camello_MovZ));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0));
+		model = glm::translate(model, glm::vec3(-0.05f, 1.45f, -0.55f));
+		tmpCuerpoCamello = model = glm::rotate(model, glm::radians(Camello_MovCuerpo), glm::vec3(1.0f, 0.0f, 0.0));
+		model = glm::translate(model, glm::vec3(0.05f, -1.45f, 0.55f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CabezaGorila.RenderModel();
+		CuerpoCamello.RenderModel();
 
+		model = glm::translate(tmpCuerpoCamello, glm::vec3(0.05f, -1.45f, 0.55f));
+		model = glm::translate(model, glm::vec3(-0.05f, 0.95f, -0.55));
+		model = glm::rotate(model, glm::radians(Camello_MovRodillaT), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.05f, -0.95f, 0.55f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		RodillaTLCamello.RenderModel();
+
+		model = glm::translate(tmpCuerpoCamello, glm::vec3(0.05f, -1.45f, 0.55f));
+		model = glm::translate(model, glm::vec3(-0.05f, 0.95f, -0.55));
+		tmpRodillaTCamello = model = glm::rotate(model, glm::radians(Camello_MovRodillaT), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.05f, -0.95f, 0.55));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		RodillaTRCamello.RenderModel();
+
+		model = glm::translate(tmpRodillaTCamello, glm::vec3(0.05f, -0.95f, 0.55f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, -0.65f));
+		model = glm::rotate(model, glm::radians(Camello_MovPiernaT), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.65f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaTLCamello.RenderModel();
+
+		model = glm::translate(tmpRodillaTCamello, glm::vec3(0.05f, -0.95f, 0.55));
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, -0.65f));
+		model = glm::rotate(model, glm::radians(Camello_MovPiernaT), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, 0.65f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaTRCamello.RenderModel();
+		//
+		model = glm::translate(tmpCuerpoCamello, glm::vec3(0.05f, -1.45f, 0.55f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.85f, 0.45f));
+		tmpRodillaDCamello = model = glm::rotate(model, glm::radians(Camello_MovRodillaD), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.85f, -0.45f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		RodillaDLCamello.RenderModel();
+
+		model = glm::translate(tmpCuerpoCamello, glm::vec3(0.05f, -1.45f, 0.55f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.85f, 0.45f));
+		model = glm::rotate(model, glm::radians(Camello_MovRodillaD), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.85f, -0.45f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		RodillaDRCamello.RenderModel();
+
+		model = glm::translate(tmpRodillaDCamello, glm::vec3(0.0f, -0.85f, -0.45f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.4f));
+		model = glm::rotate(model, glm::radians(Camello_MovPiernaD), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaDLCamello.RenderModel();
+
+		model = glm::translate(tmpRodillaDCamello, glm::vec3(0.0f, -0.85f, -0.45f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.4f));
+		model = glm::rotate(model, glm::radians(Camello_MovPiernaD), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PiernaDRCamello.RenderModel();
+
+		model = glm::translate(tmpCuerpoCamello, glm::vec3(0.05f, -1.45f, 0.55f));
+		model = glm::translate(model, glm::vec3(0.0f, 1.3f, 0.75f));
+		tmpCuelloCamello = model = rotate(model, glm::radians(Camello_MovCuello), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -1.3f, -0.75f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CuelloCamello.RenderModel();
+
+		model = glm::translate(tmpCuelloCamello, glm::vec3(0.0f, -1.3f, -0.75f));
+		model = glm::translate(model, glm::vec3(0.0f, 1.7f, 1.4f));
+		model = rotate(model, glm::radians(Camello_MovCabeza), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -1.7f, -1.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		CabezaCamello.RenderModel();
+
+		model = glm::translate(tmpRodillaTCamello, glm::vec3(Camello_MovX + 0.05f, Camello_MovY - 0.95f, Camello_MovZ + 0.55f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//Pivote.RenderModel();
 		/*
 		//Instancia del coche 
 		model = glm::mat4(1.0);
@@ -1248,8 +1680,47 @@ int main()
 
 void inputKeyframes(bool* keys)
 {
+	if (keys[GLFW_KEY_J])
+		Camello_MovX = (mainWindow.getCamello_MovX());
+	if (keys[GLFW_KEY_L])
+		Camello_MovX = (mainWindow.getCamello_MovX());
+	if (keys[GLFW_KEY_I])
+		Camello_MovY = (mainWindow.getCamello_MovY());
+	if (keys[GLFW_KEY_K])
+		Camello_MovY = (mainWindow.getCamello_MovY());
+	if (keys[GLFW_KEY_Y])
+		Camello_MovZ = (mainWindow.getCamello_MovZ());
+	if (keys[GLFW_KEY_H])
+		Camello_MovZ = (mainWindow.getCamello_MovZ());
+	if (keys[GLFW_KEY_1])
+		Camello_MovCuerpo = (mainWindow.getCamello_MovCuerpo());
+	if (keys[GLFW_KEY_2])
+		Camello_MovCuerpo = (mainWindow.getCamello_MovCuerpo());
+	if (keys[GLFW_KEY_3])
+		Camello_MovRodillaD = (mainWindow.getCamello_MovRodillaD());
+	if (keys[GLFW_KEY_4])
+		Camello_MovRodillaD = (mainWindow.getCamello_MovRodillaD());
+	if (keys[GLFW_KEY_5])
+		Camello_MovRodillaT = (mainWindow.getCamello_MovRodillaT());
+	if (keys[GLFW_KEY_6])
+		Camello_MovRodillaT = (mainWindow.getCamello_MovRodillaT());
+	if (keys[GLFW_KEY_7])
+		Camello_MovPiernaD = (mainWindow.getCamello_MovPiernaD());
+	if (keys[GLFW_KEY_8])
+		Camello_MovPiernaD = (mainWindow.getCamello_MovPiernaD());
+	if (keys[GLFW_KEY_B])
+		Camello_MovPiernaT = (mainWindow.getCamello_MovPiernaT());
+	if (keys[GLFW_KEY_N])
+		Camello_MovPiernaT = (mainWindow.getCamello_MovPiernaT());
+	if (keys[GLFW_KEY_Z])
+		Camello_MovCuello = (mainWindow.getCamello_MovCuello());
+	if (keys[GLFW_KEY_X])
+		Camello_MovCuello = (mainWindow.getCamello_MovCuello());
+	if (keys[GLFW_KEY_C])
+		Camello_MovCabeza = (mainWindow.getCamello_MovCabeza());
+	if (keys[GLFW_KEY_V])
+		Camello_MovCabeza = (mainWindow.getCamello_MovCabeza());
 
-	/*
 	if (keys[GLFW_KEY_SPACE])
 	{
 		if (reproduciranimacion < 1)
@@ -1284,13 +1755,31 @@ void inputKeyframes(bool* keys)
 		}
 	}
 
-	if (keys[GLFW_KEY_L])
+	if (keys[GLFW_KEY_M])
 	{
 		if (guardoFrame < 1)
 		{
 			saveFrame();
-			printf("movAvion_x es: %f\n", movAvion_x);
-			printf("movAvion_y es: %f\n", movAvion_y);
+			/*
+			printf("Gorila_MovX es: %f\n", Gorila_MovX);
+			printf("Gorila_MovY es: %f\n", Gorila_MovY);
+			printf("Gorila_MovZ es: %f\n", Gorila_MovZ);
+			printf("Gorila_MovCuerpo es: %f\n", Gorila_MovCuerpo);
+			printf("Gorila_MovBrazo es: %f\n", Gorila_MovBrazo);
+			printf("Gorila_MovManoL es: %f\n", Gorila_MovManoL);
+			printf("Gorila_MovManoR es: %f\n", Gorila_MovManoR);
+			*/
+			printf("Camello_MovX es: %f\n", Camello_MovX);
+			printf("Camello_MovY es: %f\n", Camello_MovY);
+			printf("Camello_MovZ es: %f\n", Camello_MovZ);
+			printf("Camello_MovCuerpo es: %f\n", Camello_MovCuerpo);
+			printf("Camello_MovCuello es: %f\n", Camello_MovCuello);
+			printf("Camello_MovCabeza es: %f\n", Camello_MovCabeza);
+			printf("Camello_MovRodillaD es: %f\n", Camello_MovRodillaD);
+			printf("Camello_MovRodillaT es: %f\n", Camello_MovRodillaT);
+			printf("Camello_MovPiernaD es: %f\n", Camello_MovPiernaD);
+			printf("Camello_MovPiernaT es: %f\n", Camello_MovPiernaT);
+
 			printf("presiona P para habilitar guardar otro frame'\n");
 			guardoFrame++;
 			reinicioFrame = 0;
@@ -1304,28 +1793,4 @@ void inputKeyframes(bool* keys)
 			printf("Ya puedes guardar otro frame presionando la tecla L'\n");
 		}
 	}
-
-
-	if (keys[GLFW_KEY_1])
-	{
-		if (ciclo < 1)
-		{
-			//printf("movAvion_x es: %f\n", movAvion_x);
-			movAvion_x += 1.0f;
-			printf("\n movAvion_x es: %f\n", movAvion_x);
-			ciclo++;
-			ciclo2 = 0;
-			printf("\n Presiona la tecla 2 para poder habilitar la variable\n");
-		}
-
-	}
-	if (keys[GLFW_KEY_2])
-	{
-		if (ciclo2 < 1 && ciclo>0)
-		{
-			ciclo = 0;
-			printf("\n Ya puedes modificar tu variable presionando la tecla 1\n");
-		}
-	}
-	*/
 }
