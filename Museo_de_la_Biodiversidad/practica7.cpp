@@ -211,14 +211,23 @@ void CreateObjects()
 
 
 	};
-	
-	Mesh *obj1 = new Mesh();
+
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
+<<<<<<< Updated upstream
 	Mesh *obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);
 	Mesh *obj3 = new Mesh();
+=======
+
+	Mesh* obj2 = new Mesh();
+	obj2->CreateMesh(vertices, indices, 32, 12);
+	meshList.push_back(obj2);
+
+	Mesh* obj3 = new Mesh();
+>>>>>>> Stashed changes
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
 	Mesh* obj4 = new Mesh();
@@ -231,7 +240,7 @@ void CreateObjects()
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -240,17 +249,40 @@ bool animacion = false;
 
 //NEW// Keyframes
 
+<<<<<<< Updated upstream
 /*
 float posXavion = 2.0, posYavion = 5.0, posZavion = -3.0;
 float	movAvion_x = 0.0f, movAvion_y = 0.0f;
 float giroAvion = 0;
 */
+=======
+float	Gorila_MovX = 13.8000006,
+Gorila_MovY = 1.5f,
+Gorila_MovZ = 10.800004f,
+Gorila_MovCadera = 0.0f,
+Gorila_MovCuerpo = 0.0f,
+Gorila_MovBrazo = 0.0f,
+Gorila_MovManoL = 0.0f,
+Gorila_MovManoR = 0.0f;
+
+float	Camello_MovX = 0.0f,
+Camello_MovY = 0.0f,
+Camello_MovZ = 0.0f,
+Camello_MovCuerpo = 0.0f,
+Camello_MovRodillaT = 0.0f,
+Camello_MovRodillaD = 0.0f,
+Camello_MovCuello = 0.0f,
+Camello_MovCabeza = 0.0f,
+Camello_MovPiernaD = 0.0f,
+Camello_MovPiernaT = 0.0f;
+>>>>>>> Stashed changes
 
 #define MAX_FRAMES 100
 int i_max_steps = 90;
 int i_curr_steps = 0;
 typedef struct _frame
 {
+<<<<<<< Updated upstream
 	//Variables para GUARDAR Key Frames
 	/*
 	float movAvion_x;		//Variable para PosicionX
@@ -260,6 +292,43 @@ typedef struct _frame
 	float giroAvion;
 	float giroAvionInc;
 	*/
+=======
+	float	Gorila_MovX,
+		Gorila_MovXInc;
+	float	Gorila_MovY,
+		Gorila_MovYInc;
+	float	Gorila_MovZ,
+		Gorila_MovZInc;
+	float	Gorila_MovCuerpo,
+		Gorila_MovCuerpoInc;
+	float	Gorila_MovBrazo,
+		Gorila_MovBrazoInc;
+	float	Gorila_MovManoL,
+		Gorila_MovManoLInc;
+	float	Gorila_MovManoR,
+		Gorila_MovManoRInc;
+
+	float	Camello_MovX,
+		Camello_MovXInc;
+	float	Camello_MovY,
+		Camello_MovYInc;
+	float	Camello_MovZ,
+		Camello_MovZInc;
+	float	Camello_MovCuerpo,
+		Camello_MovCuerpoInc;
+	float	Camello_MovRodillaD,
+		Camello_MovRodillaDInc;
+	float	Camello_MovRodillaT,
+		Camello_MovRodillaTInc;
+	float	Camello_MovPiernaD,
+		Camello_MovPiernaDInc;
+	float	Camello_MovPiernaT,
+		Camello_MovPiernaTInc;
+	float	Camello_MovCuello,
+		Camello_MovCuelloInc;
+	float	Camello_MovCabeza,
+		Camello_MovCabezaInc;
+>>>>>>> Stashed changes
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
@@ -289,6 +358,21 @@ void resetElements(void) //Tecla 0
 	movAvion_y = KeyFrame[0].movAvion_y;
 	giroAvion = KeyFrame[0].giroAvion;
 	*/
+<<<<<<< Updated upstream
+=======
+	Gorila_MovCuerpo = KeyFrame[0].Gorila_MovCuerpo;
+	Gorila_MovBrazo = KeyFrame[0].Gorila_MovBrazo;
+	Gorila_MovManoL = KeyFrame[0].Gorila_MovManoL;
+	Gorila_MovManoR = KeyFrame[0].Gorila_MovManoR;
+
+	Camello_MovCuerpo = KeyFrame[0].Camello_MovCuerpo;
+	Camello_MovCuello = KeyFrame[0].Camello_MovCuello;
+	Camello_MovCabeza = KeyFrame[0].Camello_MovCabeza;
+	Camello_MovRodillaD = KeyFrame[0].Camello_MovRodillaD;
+	Camello_MovRodillaT = KeyFrame[0].Camello_MovRodillaT;
+	Camello_MovPiernaD = KeyFrame[0].Camello_MovPiernaD;
+	Camello_MovPiernaT = KeyFrame[0].Camello_MovPiernaT;
+>>>>>>> Stashed changes
 }
 
 void interpolation(void)
@@ -405,6 +489,7 @@ int main()
 	Tigre = Model();
 	Tigre.LoadModel("Models/TigreLoop.fbx");
 
+<<<<<<< Updated upstream
 	//Cargamos Vegetación Sala2
 	Taro = Model();
 	Taro.LoadModel("Models/Taro.fbx");
@@ -413,6 +498,9 @@ int main()
 	JunglePlant = Model();
 	JunglePlant.LoadModel("Models/ExtraPlant.fbx");
 	
+=======
+	//Gorila
+>>>>>>> Stashed changes
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
 
@@ -720,14 +808,14 @@ int main()
 		model = glm::translate(model, glm::vec3(20.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
+
 		Helecho.RenderModel();
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(30.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Helecho.RenderModel();
-		
+
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(40.0f, 0.0f, 0.0f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1172,7 +1260,7 @@ int main()
 		CabezaGorila.RenderModel();
 
 		/*
-		//Instancia del coche 
+		//Instancia del coche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
 		modelaux = model;
@@ -1214,7 +1302,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Llanta_M.RenderModel();
-	
+
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 6.0));
@@ -1229,7 +1317,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
+
 		//blending: transparencia o traslucidez
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
