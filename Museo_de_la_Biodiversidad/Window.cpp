@@ -14,6 +14,16 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	width = windowWidth;
 	height = windowHeight;
 	muevex = 2.0f;
+	Camello_MovX = 0.0f;
+	Camello_MovY = 0.0f;
+	Camello_MovZ = 0.0f;
+	Camello_MovCuerpo = 0.0f;
+	Camello_MovRodillaD = 0.0f;
+	Camello_MovRodillaT = 0.0f;
+	Camello_MovPiernaD = 0.0f;
+	Camello_MovPiernaT = 0.0f;
+	Camello_MovCuello = 0.0f;
+	Camello_MovCabeza = 0.0f;
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -112,8 +122,86 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow-> muevex -= 1.0;
 	}
-
-
+	if (key == GLFW_KEY_J)
+	{
+		theWindow->Camello_MovX += 0.05;
+	}
+	if (key == GLFW_KEY_L)
+	{
+		theWindow->Camello_MovX -= 0.05;
+	}
+	if (key == GLFW_KEY_I)
+	{
+		theWindow->Camello_MovY += 0.05;
+	}
+	if (key == GLFW_KEY_K)
+	{
+		theWindow->Camello_MovY -= 0.05;
+	}
+	if (key == GLFW_KEY_Y)
+	{
+		theWindow->Camello_MovZ += 0.05;
+	}
+	if (key == GLFW_KEY_H)
+	{
+		theWindow->Camello_MovZ -= 0.05;
+	}
+	if (key == GLFW_KEY_1)
+	{
+		theWindow->Camello_MovCuerpo += 0.3;
+	}
+	if (key == GLFW_KEY_2)
+	{
+		theWindow->Camello_MovCuerpo -= 0.3;
+	}
+	if (key == GLFW_KEY_3)
+	{
+		theWindow->Camello_MovRodillaD += 0.3;
+	}
+	if (key == GLFW_KEY_4)
+	{
+		theWindow->Camello_MovRodillaD -= 0.3;
+	}
+	if (key == GLFW_KEY_5)
+	{
+		theWindow->Camello_MovRodillaT += 0.3;
+	}
+	if (key == GLFW_KEY_6)
+	{
+		theWindow->Camello_MovRodillaT -= 0.3;
+	}
+	if (key == GLFW_KEY_7)
+	{
+		theWindow->Camello_MovPiernaD += 0.3;
+	}
+	if (key == GLFW_KEY_8)
+	{
+		theWindow->Camello_MovPiernaD -= 0.3;
+	}
+	if (key == GLFW_KEY_B)
+	{
+		theWindow->Camello_MovPiernaT += 0.3;
+	}
+	if (key == GLFW_KEY_N)
+	{
+		theWindow->Camello_MovPiernaT -= 0.3;
+	}
+	if (key == GLFW_KEY_Z)
+	{
+		theWindow->Camello_MovCuello += 0.3;
+	}
+	if (key == GLFW_KEY_X)
+	{
+		theWindow->Camello_MovCuello -= 0.3;
+	}
+	if (key == GLFW_KEY_C)
+	{
+		theWindow->Camello_MovCabeza += 0.3;
+	}
+	if (key == GLFW_KEY_V)
+	{
+		theWindow->Camello_MovCabeza -= 0.3;
+	}
 
 	if (key >= 0 && key < 1024)
 	{
