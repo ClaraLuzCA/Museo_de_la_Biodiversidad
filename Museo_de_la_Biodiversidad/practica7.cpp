@@ -48,9 +48,7 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
-float mov_alas;
-float mov_alas2;
-float mov_alas3;
+float mov_alas = 0.0f;
 Camera camera;
 
 Texture brickTexture;
@@ -339,6 +337,7 @@ int FrameIndex = 6;			//introducir datos
 
 //start debe ser false para que inicie solo
 bool start = false, play = false;
+bool subeAla = true, bajaAla = false; 
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -480,6 +479,24 @@ void animate(void)
 			i_curr_steps++;
 		}
 
+	}
+	if (subeAla) {
+		if (mov_alas <= 45.0f) {
+			mov_alas += 0.5f;
+		}
+		else {
+			subeAla = false;
+			bajaAla = true;
+		}
+	}
+	 if (bajaAla) {
+		if (mov_alas >= -45.0f) {
+			mov_alas -= 0.5f;
+		}
+		else {
+			bajaAla = false;
+			subeAla = true; 
+		}
 	}
 }
 
@@ -947,35 +964,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Tierra.RenderModel();
 
-		//Instancia Mariposas
-		
-		if (mov_alas2 <45.0) {
-			mov_alas += 0.5 * deltaTime;
-			mov_alas2 += 0.5 * deltaTime;
-		}
-		else {
-			mov_alas = mov_alas;
-			mov_alas2 = mov_alas2;
-			if (mov_alas3 >-45.0) {
-				mov_alas -= 0.5 * deltaTime;
-				mov_alas3 -= 0.5 * deltaTime;
-			}
-			else {
-				mov_alas = 0.0;
-				mov_alas2 = 0.0;
-				mov_alas3 = 0.0;
-			}
-		}
-
-		if (mov_alas2 >-45.0) {
-			mov_alas2 -= 0.5 * deltaTime;
-		}
-		else {
-			if (mov_alas2 > 0.0) {
-				mov_alas2 -= 1.0 * deltaTime;
-			}
-			mov_alas2 = 0.0;
-		}
 		//mariposa centro
 		//cuerpo
 		model = glm::mat4(1.0);
@@ -986,12 +974,12 @@ int main()
 		Cuerpo_Mariposa.RenderModel();
 		//alas
 		model = modelaux;
-		model = glm::rotate(model, mov_alas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(mov_alas), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ala1.RenderModel();
 		
 		model = modelaux;
-		model = glm::rotate(model, mov_alas2 * toRadians, glm::vec3(1.0f,0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-mov_alas), glm::vec3(1.0f,0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ala2.RenderModel();
 
