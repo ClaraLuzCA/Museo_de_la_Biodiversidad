@@ -1217,8 +1217,11 @@ int main()
 		//----------
 		//Vegetación Sala 2 Parte 1
 		//----------
+		float angleCactus = 180.0f; // Ángulo de rotación en grados
+		float angleCactusR = glm::radians(angleCactus); // Convertir a radianes
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-45.0f, 8.0f, 35.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1227,6 +1230,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-35.0f, 8.0f, 42.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1235,6 +1239,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-75.0f, 8.0f, 35.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1242,6 +1247,7 @@ int main()
 		Taro.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::translate(model, glm::vec3(-95.0f, 8.0f, 54.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
@@ -1251,6 +1257,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-59.0f, 8.0f, 65.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1259,6 +1266,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-100.0f, 8.0f, 55.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1267,6 +1275,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, 45.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1275,6 +1284,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, 65.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1288,7 +1298,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-30.0f, 8.0f, 40.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1297,7 +1307,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-56.0f, 8.0f, 50.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1306,7 +1316,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-90.0f, 8.0f, 35.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1315,7 +1325,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-110.0f, 8.0f, 45.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1326,6 +1336,7 @@ int main()
 		//----------
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-45.0f, 8.0f, -35.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1334,6 +1345,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-35.0f, 8.0f, -42.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1342,6 +1354,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-75.0f, 8.0f, -35.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1350,6 +1363,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-95.0f, 8.0f, -54.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1358,6 +1372,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-59.0f, 8.0f, -65.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1366,6 +1381,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-100.0f, 8.0f, -55.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1374,6 +1390,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, -45.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1382,6 +1399,7 @@ int main()
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, -65.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1393,7 +1411,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-30.0f, 8.0f, -40.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1402,7 +1420,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-56.0f, 8.0f, -50.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1411,7 +1429,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-90.0f, 8.0f, -35.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1420,7 +1438,7 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-110.0f, 8.0f, -45.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
-		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
@@ -1431,13 +1449,14 @@ int main()
 		float angleInRadians = glm::radians(angleInDegrees); // Convertir a radianes
 		// Crear la matriz de transformación
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-65.0f, 7.5f, 40.0f));
+		model = glm::translate(model, glm::vec3(35.0f, 7.5f, 40.0f));
 		model = glm::rotate(model, angleInRadians, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
 		// Enviar la matriz al shader y renderizar el modelo
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		TigreTexture.UseTexture();
 		Tigre.RenderModel();
+
 		// -------------------------------------------------------------------------------------------------------------------------
 		// Gorila
 		// -------------------------------------------------------------------------------------------------------------------------
