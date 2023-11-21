@@ -48,6 +48,9 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
+float mov_alas;
+float mov_alas2;
+float mov_alas3;
 Camera camera;
 
 Texture brickTexture;
@@ -74,7 +77,7 @@ Model Blackhawk_M;
 Model Dado_M;
 Model Domos;
 Model Tierra;
-Model Mariposa;
+
 Model Lampara;
 Model Helecho;
 Model Monstera;
@@ -113,6 +116,12 @@ Model PiernaDRCamello;
 Model PiernaTLCamello;
 Model PiernaTRCamello;
 Model CuelloCamello;
+
+//CUERPO MARIPOSA
+Model Cuerpo_Mariposa;
+Model ala1;
+Model ala2;
+Model Mariposa;
 
 glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
@@ -537,6 +546,14 @@ int main()
 	Monstera = Model();
 	Monstera.LoadModel("Models/monsterra2.obj");
 
+	//cuerpo mariposa
+	Cuerpo_Mariposa = Model();
+	Cuerpo_Mariposa.LoadModel("Models/cuerpo_mariposa.obj");
+	ala1 = Model();
+	ala1.LoadModel("Models/ala1.obj");
+	ala2 = Model();
+	ala2.LoadModel("Models/ala2.obj");
+
 	//Cargamos Tigre
 	Tigre = Model();
 	Tigre.LoadModel("Models/TigreLoop.fbx");
@@ -931,13 +948,53 @@ int main()
 		Tierra.RenderModel();
 
 		//Instancia Mariposas
+		
+		if (mov_alas2 <45.0) {
+			mov_alas += 0.5 * deltaTime;
+			mov_alas2 += 0.5 * deltaTime;
+		}
+		else {
+			mov_alas = mov_alas;
+			mov_alas2 = mov_alas2;
+			if (mov_alas3 >-45.0) {
+				mov_alas -= 0.5 * deltaTime;
+				mov_alas3 -= 0.5 * deltaTime;
+			}
+			else {
+				mov_alas = 0.0;
+				mov_alas2 = 0.0;
+				mov_alas3 = 0.0;
+			}
+		}
+
+		if (mov_alas2 >-45.0) {
+			mov_alas2 -= 0.5 * deltaTime;
+		}
+		else {
+			if (mov_alas2 > 0.0) {
+				mov_alas2 -= 1.0 * deltaTime;
+			}
+			mov_alas2 = 0.0;
+		}
 		//mariposa centro
+		//cuerpo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(50.0f, 50.5f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
-
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Mariposa.RenderModel();
+		Cuerpo_Mariposa.RenderModel();
+		//alas
+		model = modelaux;
+		model = glm::rotate(model, mov_alas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ala1.RenderModel();
+		
+		model = modelaux;
+		model = glm::rotate(model, mov_alas2 * toRadians, glm::vec3(1.0f,0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ala2.RenderModel();
+
 		//mariposa atras
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 40.5f, 5.0f));
