@@ -49,6 +49,10 @@ std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
 float mov_alas = 0.0f;
+float movMariposa;
+float movOffset;
+float angulovaria = 0.0;
+float rotM = 0.0f;
 Camera camera;
 
 Texture brickTexture;
@@ -338,6 +342,10 @@ int FrameIndex = 6;			//introducir datos
 //start debe ser false para que inicie solo
 bool start = false, play = false;
 bool subeAla = true, bajaAla = false; 
+bool avanzarM = true; 
+bool retrocederM = false;
+bool rotM1 = true;
+bool rotM2 = false;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -412,6 +420,7 @@ void interpolation(void)
 
 void animate(void)
 {
+	
 	if (!start) {
 		resetElements();
 		//First Interpolation				
@@ -482,7 +491,7 @@ void animate(void)
 	}
 	if (subeAla) {
 		if (mov_alas <= 45.0f) {
-			mov_alas += 0.5f;
+			mov_alas +=0.8f;
 		}
 		else {
 			subeAla = false;
@@ -491,13 +500,58 @@ void animate(void)
 	}
 	 if (bajaAla) {
 		if (mov_alas >= -45.0f) {
-			mov_alas -= 0.5f;
+			mov_alas -= 0.8f;
 		}
 		else {
 			bajaAla = false;
 			subeAla = true; 
 		}
 	}
+	 angulovaria += 10.0f * deltaTime;
+
+	 if (avanzarM) {
+		 if (movMariposa > -50.0f){
+			 movMariposa -= 0.1 * deltaTime;
+
+		 } else {
+			 if (rotM1) {
+				if (rotM < 180.0f) {
+					rotM += 10.0f* deltaTime;
+				}
+				else {
+					avanzarM = false;
+					retrocederM = true;
+					rotM1 = false;
+					rotM2 = true;
+				}
+			 }
+			 
+			 
+		 }
+	 }
+	 else {
+		 if (retrocederM) {
+			 if (movMariposa < 0.0f) {
+				 movMariposa += 0.1 * deltaTime;
+				 //printf("avanza%f \n ",movCoche);
+			 }
+			 else {
+				 if (rotM2) {
+					 if (rotM >0.0f) {
+						 rotM -= 10.0 * deltaTime;
+					 }
+					 else {
+						 avanzarM = true;
+						 retrocederM = false;
+						 rotM1 = true;
+						 rotM2 = false;
+					 }
+				 }
+			 }
+		 }
+	 }
+	 
+
 }
 
 ///////////////* FIN KEYFRAMES*////////////////////////////
@@ -683,18 +737,50 @@ int main()
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
-	/*
 	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f,
-		-6.0f, 1.5f, 1.5f,
+	/*pointLights[0] = PointLight(0.0f, 1.0f, 0.0f,
+		2.5f, 2.5f,
+		90.0f, 7.5f, 45.5f,
 		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
-	pointLights[1] = PointLight(0.0f, 0.0f, 1.0f,
+	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f,
-		6.0f, 4.5f, 1.5f,
+		20.0f, 7.5f, -35.0f,
 		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
+	pointLightCount++;*/
+
+	//linterna
+	//spotLightCount++;
+	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
+		30.0f, 8.0f,
+		90.0f, 10.0f, 45.0f,
+		-45.0f, 50.0f, 0.0f,
+		0.02f, 0.2f, 0.05f,
+		50.0f);
+	spotLightCount++;
+	spotLights[2] = SpotLight(1.0f, 1.0f, 1.0f,
+		5.0f, 4.0f,
+		20.0f, 13.0f, -35.0f,
+		180.0f, 50.0f, -180.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	spotLights[3] = SpotLight(1.0f, 1.0f, 1.0f,
+		5.0f, 4.0f,
+		18.0f, 12.0f, 45.0f,
+		180.0f, 50.0f, -180.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
+		30.0f, 8.0f,
+		90.0f, 12.0f, -35.0f,
+		-90.0f, 100.0f, 0.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	/*
+	
 
 	unsigned int spotLightCount = 0;
 	//linterna
@@ -924,7 +1010,7 @@ int main()
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		//spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
@@ -967,8 +1053,9 @@ int main()
 		//mariposa centro
 		//cuerpo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(50.0f, 50.5f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::translate(model, glm::vec3(80.0f+movMariposa, 25.5f+ mov_alas*(0.1), 5.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		model = glm::rotate(model, glm::radians(rotM), glm::vec3(0.0f, 1.0f, 0.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Cuerpo_Mariposa.RenderModel();
