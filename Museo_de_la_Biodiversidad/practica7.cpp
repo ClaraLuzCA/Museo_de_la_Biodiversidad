@@ -285,7 +285,7 @@ float	Camello_MovX = 0.0f,
 
 #define MAX_FRAMES 100
 int i_max_steps = 240;
-int i_curr_steps = 6;
+int i_curr_steps = 0;
 typedef struct _frame
 {
 	float	Gorila_MovX,
@@ -326,7 +326,7 @@ typedef struct _frame
 }FRAME;
 
 FRAME KeyFrame[MAX_FRAMES];
-int FrameIndex = 6;			//introducir datos
+int FrameIndex = 7;			//introducir datos
 
 //start debe ser false para que inicie solo
 bool start = false, play = false;
@@ -786,21 +786,21 @@ int main()
 	KeyFrame[4].Camello_MovX = -10.10002;
 	KeyFrame[4].Camello_MovY = 1.1;
 	KeyFrame[4].Camello_MovZ = 6.650007;
-	KeyFrame[4].Camello_MovCuerpo = 13.200005;
-	KeyFrame[4].Camello_MovCuello = 38.699951;
-	KeyFrame[4].Camello_MovCabeza = 3.3;
-	KeyFrame[4].Camello_MovRodillaD = -77.100021;
-	KeyFrame[4].Camello_MovRodillaT = 2.70;
-	KeyFrame[4].Camello_MovPiernaD = 41.999943;
+	KeyFrame[4].Camello_MovCuerpo = 2.099999;
+	KeyFrame[4].Camello_MovCuello = 0.0;
+	KeyFrame[4].Camello_MovCabeza = 0.0;
+	KeyFrame[4].Camello_MovRodillaD = 0.0;
+	KeyFrame[4].Camello_MovRodillaT = 0.0;
+	KeyFrame[4].Camello_MovPiernaD = 0.0;
 	KeyFrame[4].Camello_MovPiernaT = 0.0;
 
 	KeyFrame[5].Gorila_MovX = 13.8000006;
 	KeyFrame[5].Gorila_MovY = 1.5;
 	KeyFrame[5].Gorila_MovZ = 10.800004;
-	KeyFrame[5].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[5].Gorila_MovCuerpo = 6.600;
 	KeyFrame[5].Gorila_MovBrazo = -61.499893;
-	KeyFrame[5].Gorila_MovManoL = -130.800568;
-	KeyFrame[5].Gorila_MovManoR = 52.499916;
+	KeyFrame[5].Gorila_MovManoL = -61.499897;
+	KeyFrame[5].Gorila_MovManoR = 122.400482;
 
 	KeyFrame[5].Camello_MovX = -10.10002;
 	KeyFrame[5].Camello_MovY = 1.1;
@@ -813,42 +813,24 @@ int main()
 	KeyFrame[5].Camello_MovPiernaD = 0.0;
 	KeyFrame[5].Camello_MovPiernaT = 0.0;
 
-	/*
-	//---------PARA TENER KEYFRAMES GUARDADOS NO VOLATILES QUE SIEMPRE SE UTILIZARAN SE DECLARAN AQUÍ
+	KeyFrame[6].Gorila_MovX = 13.8000006;
+	KeyFrame[6].Gorila_MovY = 1.5;
+	KeyFrame[6].Gorila_MovZ = 10.800004;
+	KeyFrame[6].Gorila_MovCuerpo = 24.299986;
+	KeyFrame[6].Gorila_MovBrazo = -61.499893;
+	KeyFrame[6].Gorila_MovManoL = -130.800568;
+	KeyFrame[6].Gorila_MovManoR = 52.499916;
 
-	KeyFrame[0].movAvion_x = 0.0f;
-	KeyFrame[0].movAvion_y = 0.0f;
-	KeyFrame[0].giroAvion = 0;
-
-
-	KeyFrame[1].movAvion_x = -1.0f;
-	KeyFrame[1].movAvion_y = 2.0f;
-	KeyFrame[1].giroAvion = 0;
-
-
-	KeyFrame[2].movAvion_x = -2.0f;
-	KeyFrame[2].movAvion_y = 0.0f;
-	KeyFrame[2].giroAvion = 0;
-
-
-	KeyFrame[3].movAvion_x = -3.0f;
-	KeyFrame[3].movAvion_y = -2.0f;
-	KeyFrame[3].giroAvion = 0;
-
-
-	KeyFrame[4].movAvion_x = -3.0f;
-	KeyFrame[4].movAvion_y = -2.0f;
-	KeyFrame[4].giroAvion = 180.0f;
-
-	KeyFrame[5].movAvion_x = 0.0f;
-	KeyFrame[5].movAvion_y = 0.0f;
-	KeyFrame[5].giroAvion = 180.0;
-
-	KeyFrame[6].movAvion_x = 0.0f;
-	KeyFrame[6].movAvion_y = 0.0f;
-	KeyFrame[6].giroAvion = 0.0f;
-
-	*/
+	KeyFrame[6].Camello_MovX = -10.10002;
+	KeyFrame[6].Camello_MovY = 1.1;
+	KeyFrame[6].Camello_MovZ = 6.650007;
+	KeyFrame[6].Camello_MovCuerpo = 2.099999;
+	KeyFrame[6].Camello_MovCuello = 0.0;
+	KeyFrame[6].Camello_MovCabeza = 0.0;
+	KeyFrame[6].Camello_MovRodillaD = 0.0;
+	KeyFrame[6].Camello_MovRodillaT = 0.0;
+	KeyFrame[6].Camello_MovPiernaD = 0.0;
+	KeyFrame[6].Camello_MovPiernaT = 0.0;
 
 	//Se agregan nuevos frames 
 	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
