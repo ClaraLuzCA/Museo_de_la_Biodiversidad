@@ -2,6 +2,7 @@
 Semestre 2024-1
 Proyecto Final Museo de la Biodiversidad
 */
+
 //para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -26,7 +27,7 @@ Proyecto Final Museo de la Biodiversidad
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include"Model.h"
+#include "Model.h"
 #include "Skybox.h"
 
 //para iluminación
@@ -35,6 +36,7 @@ Proyecto Final Museo de la Biodiversidad
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+
 const float toRadians = 3.14159265f / 180.0f;
 //variables animación
 GLfloat earthRotationAngle = 0.0f;
@@ -59,6 +61,10 @@ Texture MariposaTexture;
 Texture GorilaTexture;
 //Tigre
 Texture TigreTexture;
+//Vegetación Segunda Escena
+Texture PlantaTaro;
+Texture ArbolTexture;
+Texture JungleTexture;
 
 Model Kitt_M;
 Model Llanta_M;
@@ -73,6 +79,10 @@ Model Helecho;
 Model Monstera;
 //Tigre
 Model Tigre;
+//Vegetación
+Model Taro;
+Model ArbolS;
+Model JunglePlant;
 
 // Gorila
 Model CabezaGorila;
@@ -97,7 +107,6 @@ glm::mat4 tmpMusloRGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaLGorila = glm::mat4(1.0f);
 glm::mat4 tmpPiernaRGorila = glm::mat4(1.0f);
 
-
 Skybox skybox;
 
 //materiales
@@ -117,7 +126,6 @@ SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 // Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
-
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
@@ -207,23 +215,17 @@ void CreateObjects()
 	Mesh *obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
-
 	Mesh *obj2 = new Mesh();
 	obj2->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj2);
-
 	Mesh *obj3 = new Mesh();
 	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj3);
-
 	Mesh* obj4 = new Mesh();
 	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
 	meshList.push_back(obj4);
-
 	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
 	calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
-
 }
 
 
@@ -296,9 +298,7 @@ void interpolation(void)
 	KeyFrame[playIndex].movAvion_yInc = (KeyFrame[playIndex + 1].movAvion_y - KeyFrame[playIndex].movAvion_y) / i_max_steps;
 	KeyFrame[playIndex].giroAvionInc = (KeyFrame[playIndex + 1].giroAvion - KeyFrame[playIndex].giroAvion) / i_max_steps;
 	*/
-
 }
-
 
 void animate(void)
 {
@@ -367,6 +367,12 @@ int main()
 	TigreTexture = Texture("Textures/Tigre.jpeg");
 	TigreTexture.LoadTextureA();
 
+	//Cargamos textura del vegetación
+	PlantaTaro = Texture("Textures/taroP.png");
+	PlantaTaro.LoadTextureA();
+	JungleTexture = Texture("Textures/ExtraPlant.png");
+	JungleTexture.LoadTextureA();
+
 	Domo_Exterior = Texture("Textures/Domo_exterior");
 	Domo_Interior = Texture("Textures/Domo_interior");
 
@@ -398,6 +404,14 @@ int main()
 	//Cargamos Tigre
 	Tigre = Model();
 	Tigre.LoadModel("Models/TigreLoop.fbx");
+
+	//Cargamos Vegetación Sala2
+	Taro = Model();
+	Taro.LoadModel("Models/Taro.fbx");
+	ArbolS = Model();
+	ArbolS.LoadModel("Models/Oldtree.fbx");
+	JunglePlant = Model();
+	JunglePlant.LoadModel("Models/ExtraPlant.fbx");
 	
 	CabezaGorila = Model();
 	CabezaGorila.LoadModel("Models/Gorila/Cabeza.obj");
@@ -533,7 +547,6 @@ int main()
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
-
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
@@ -865,6 +878,218 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Monstera.RenderModel();
 
+		//----------
+		//Vegetación Sala 2 Parte 1
+		//----------
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-45.0f, 8.0f, 35.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-35.0f, 8.0f, 42.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-75.0f, 8.0f, 35.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-95.0f, 8.0f, 54.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-59.0f, 8.0f, 65.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-100.0f, 8.0f, 55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, 45.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, 65.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		// ------------------
+		// Vegetación Planta Extra 
+		// ------------------
+		float anglePlanta = 180.0f; // Ángulo de rotación en grados
+		float anglePlantaR = glm::radians(anglePlanta); // Convertir a radianes
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 8.0f, 40.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-56.0f, 8.0f, 50.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-90.0f, 8.0f, 35.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-110.0f, 8.0f, 45.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+
+		//----------
+		//Vegetación Sala 2 Parte 2
+		//----------
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-45.0f, 8.0f, -35.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-35.0f, 8.0f, -42.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-75.0f, 8.0f, -35.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-95.0f, 8.0f, -54.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-59.0f, 8.0f, -65.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-100.0f, 8.0f, -55.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, -45.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, -65.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PlantaTaro.UseTexture();
+		Taro.RenderModel();
+		// ------------------
+		// Vegetación Planta Extra 
+		// ------------------
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 8.0f, -40.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-56.0f, 8.0f, -50.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-90.0f, 8.0f, -35.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+		//Vegetación Sala 2
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-110.0f, 8.0f, -45.0f));
+		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
+		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		JungleTexture.UseTexture();
+		JunglePlant.RenderModel();
+
 		//Tigre
 		float angleInDegrees = 180.0f; // Ángulo de rotación en grados
 		float angleInRadians = glm::radians(angleInDegrees); // Convertir a radianes
@@ -1018,7 +1243,6 @@ int main()
 
 		mainWindow.swapBuffers();
 	}
-
 	return 0;
 }
 
