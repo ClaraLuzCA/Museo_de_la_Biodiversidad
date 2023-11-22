@@ -23,21 +23,128 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 	if (keys[GLFW_KEY_W])
 	{
 		position += front * velocity;
+		position.y = 8.0f;
+		if (position.z > 20.0f) {
+			position.z = 20.0f;
+		}else if (position.z < -20.0f) {
+			position.z = -20.0f;
+		}
+		if (position.x > 120.0f) {
+			position.x = 120.0f;
+		}
+		else if (position.x < -120.0f) {
+			position.x = -120.0f;
+		}
+		if ((position.x > -10 && position.x < 10) && (position.z > -10 && position.z < 10)) {
+			if (position.x >= -10 && position.x <= 0.0f) {
+				position.x = -10;
+			}else if (position.x <= 10 && position.x >= 0.0f) {
+				position.x = 10;
+			}else if (position.z >= -10 && position.z <= 0.0f) {
+				position.z = -10;
+			}else if (position.z <= 10 && position.z >= 0.0f) {
+				position.z = 10;
+			}
+		}
 	}
 
 	if (keys[GLFW_KEY_S])
 	{
 		position -= front * velocity;
+		position.y = 8.0f;
+		if (position.z > 20.0f) {
+			position.z = 20.0f;
+		}
+		else if (position.z < -20.0f) {
+			position.z = -20.0f;
+		}
+		if (position.x > 120.0f) {
+			position.x = 120.0f;
+		}
+		else if (position.x < -120.0f) {
+			position.x = -120.0f;
+		}
+		if ((position.x > -10 && position.x < 10) && (position.z > -10 && position.z < 10)) {
+			if (position.x >= -10 && position.x <= 0.0f) {
+				position.x = -10;
+			}
+			else if (position.x <= 10 && position.x >= 0.0f) {
+				position.x = 10;
+			}
+			else if (position.z >= -10 && position.z <= 0.0f) {
+				position.z = -10;
+			}
+			else if (position.z <= 10 && position.z >= 0.0f) {
+				position.z = 10;
+			}
+		}
 	}
 
 	if (keys[GLFW_KEY_A])
 	{
 		position -= right * velocity;
+		position.y = 8.0f;
+		if (position.z > 20.0f) {
+			position.z = 20.0f;
+		}
+		else if (position.z < -20.0f) {
+			position.z = -20.0f;
+		}
+		if (position.x > 120.0f) {
+			position.x = 120.0f;
+		}
+		else if (position.x < -120.0f) {
+			position.x = -120.0f;
+		}
+		if ((position.x > -10 && position.x < 10) && (position.z > -10 && position.z < 10)) {
+			if (position.x >= -10 && position.x <= 0.0f) {
+				position.x = -10;
+			}
+			else if (position.x <= 10 && position.x >= 0.0f) {
+				position.x = 10;
+			}
+			else if (position.z >= -10 && position.z <= 0.0f) {
+				position.z = -10;
+			}
+			else if (position.z <= 10 && position.z >= 0.0f) {
+				position.z = 10;
+			}
+		}
 	}
 
 	if (keys[GLFW_KEY_D])
 	{
 		position += right * velocity;
+		position.y = 8.0f;
+		if (position.z > 20.0f) {
+			position.z = 20.0f;
+		}
+		else if (position.z < -20.0f) {
+			position.z = -20.0f;
+		}
+		if (position.x > 120.0f) {
+			position.x = 120.0f;
+		}
+		else if (position.x < -120.0f) {
+			position.x = -120.0f;
+		}
+		if ((position.x > -10 && position.x < 10) && (position.z > -10 && position.z < 10)) {
+			if (position.x >= -10 && position.x <= 0.0f) {
+				position.x = -10;
+			}else if (position.x <= 10 && position.x >= 0.0f) {
+				position.x = 10;
+			}else if (position.z >= -10 && position.z <= 0.0f) {
+				position.z = -10;
+			}else if (position.z <= 10 && position.z >= 0.0f) {
+				position.z = 10;
+			}
+		}
+	}
+	if (keys[GLFW_KEY_V])
+	{
+		position.y = 250.0f;
+		position.x = 0.0f;
+		position.z = 0.0f;
 	}
 }
 

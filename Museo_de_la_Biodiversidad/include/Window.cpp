@@ -46,7 +46,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "PracticaXX:Nombre de la practica", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Proyecto Final - Museo de la Biodiversidad", NULL, NULL);
 
 	if (!mainWindow)
 	{

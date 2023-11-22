@@ -138,6 +138,7 @@ Model Rana_p4;
 
 
 Model Armadillo;
+Model Info;
 
 glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
@@ -354,6 +355,7 @@ FRAME KeyFrame[MAX_FRAMES];
 int FrameIndex = 7;			//introducir datos
 
 //start debe ser false para que inicie solo
+bool anim = true; 
 bool start = false, play = false;
 bool subeAla = true;
 bool avanzarM = true; 
@@ -455,176 +457,180 @@ void animate(void)
 		play = true;
 	}
 	//Movimiento del objeto con barra espaciadora
-	if (play)
-	{
-		if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
+	if (anim) {
+		if (play)
 		{
-			playIndex++;
-			//printf("playindex : %d\n", playIndex);
-			if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+			if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
 			{
-				resetElements();
-				//First Interpolation				
-				interpolation();
-				//play = true;
-				playIndex = 0;
-				i_curr_steps = 0;
-				//printf("Frame index= %d\n", FrameIndex);
-				//printf("termino la animacion\n");
-				playIndex = 0;
-				//play = false;
+				playIndex++;
+				//printf("playindex : %d\n", playIndex);
+				if (playIndex > FrameIndex - 2)	//Fin de toda la animación con último frame?
+				{
+					resetElements();
+					//First Interpolation				
+					interpolation();
+					//play = true;
+					playIndex = 0;
+					i_curr_steps = 0;
+					//printf("Frame index= %d\n", FrameIndex);
+					//printf("termino la animacion\n");
+					playIndex = 0;
+					//play = false;
+				}
+				else //Interpolación del próximo cuadro
+				{
+
+					i_curr_steps = 0; //Resetea contador
+					//Interpolar
+					interpolation();
+				}
 			}
-			else //Interpolación del próximo cuadro
+			else
 			{
+				//Dibujar Animación
+				Gorila_MovX = KeyFrame[playIndex].Gorila_MovX;
+				Gorila_MovY = KeyFrame[playIndex].Gorila_MovY;
+				Gorila_MovZ = KeyFrame[playIndex].Gorila_MovZ;
+				Gorila_MovCuerpo += KeyFrame[playIndex].Gorila_MovCuerpoInc;
+				Gorila_MovBrazo += KeyFrame[playIndex].Gorila_MovBrazoInc;
+				Gorila_MovManoL += KeyFrame[playIndex].Gorila_MovManoLInc;
+				Gorila_MovManoR += KeyFrame[playIndex].Gorila_MovManoRInc;
+				//Camello
+				Camello_MovX = KeyFrame[playIndex].Camello_MovX;
+				Camello_MovY = KeyFrame[playIndex].Camello_MovY;
+				Camello_MovZ = KeyFrame[playIndex].Camello_MovZ;
+				Camello_MovCuerpo += KeyFrame[playIndex].Camello_MovCuerpoInc;
+				Camello_MovCuello += KeyFrame[playIndex].Camello_MovCuelloInc;
+				Camello_MovCabeza += KeyFrame[playIndex].Camello_MovCabezaInc;
+				Camello_MovRodillaD += KeyFrame[playIndex].Camello_MovRodillaDInc;
+				Camello_MovRodillaT += KeyFrame[playIndex].Camello_MovRodillaTInc;
+				Camello_MovPiernaD += KeyFrame[playIndex].Camello_MovPiernaDInc;
+				Camello_MovPiernaT += KeyFrame[playIndex].Camello_MovPiernaTInc;
 
-				i_curr_steps = 0; //Resetea contador
-				//Interpolar
-				interpolation();
+				i_curr_steps++;
 			}
-		}
-		else
-		{
-			//Dibujar Animación
-			Gorila_MovX = KeyFrame[playIndex].Gorila_MovX;
-			Gorila_MovY = KeyFrame[playIndex].Gorila_MovY;
-			Gorila_MovZ = KeyFrame[playIndex].Gorila_MovZ;
-			Gorila_MovCuerpo += KeyFrame[playIndex].Gorila_MovCuerpoInc;
-			Gorila_MovBrazo += KeyFrame[playIndex].Gorila_MovBrazoInc;
-			Gorila_MovManoL += KeyFrame[playIndex].Gorila_MovManoLInc;
-			Gorila_MovManoR += KeyFrame[playIndex].Gorila_MovManoRInc;
-			//Camello
-			Camello_MovX = KeyFrame[playIndex].Camello_MovX;
-			Camello_MovY = KeyFrame[playIndex].Camello_MovY;
-			Camello_MovZ = KeyFrame[playIndex].Camello_MovZ;
-			Camello_MovCuerpo += KeyFrame[playIndex].Camello_MovCuerpoInc;
-			Camello_MovCuello += KeyFrame[playIndex].Camello_MovCuelloInc;
-			Camello_MovCabeza += KeyFrame[playIndex].Camello_MovCabezaInc;
-			Camello_MovRodillaD += KeyFrame[playIndex].Camello_MovRodillaDInc;
-			Camello_MovRodillaT += KeyFrame[playIndex].Camello_MovRodillaTInc;
-			Camello_MovPiernaD += KeyFrame[playIndex].Camello_MovPiernaDInc;
-			Camello_MovPiernaT += KeyFrame[playIndex].Camello_MovPiernaTInc;
 
-			i_curr_steps++;
 		}
-
-	}
-	if (subeAla) {
-		if (mov_alas <= 45.0f) {
-			mov_alas +=0.8f;
+		if (subeAla) {
+			if (mov_alas <= 45.0f) {
+				mov_alas += 0.8f;
+			}
+			else {
+				subeAla = false;
+			}
 		}
 		else {
-			subeAla = false;
+			if (mov_alas >= -45.0f) {
+				mov_alas -= 0.8f;
+			}
+			else {
+				subeAla = true;
+			}
 		}
-	}else {
-		if (mov_alas >= -45.0f) {
-			mov_alas -= 0.8f;
+		if (subePata) {
+			if (mov_Patas <= 10.0f) {
+				mov_Patas += 0.7f;
+			}
+			else {
+				subePata = false;
+				bajaPata = true;
+			}
+		}
+		if (bajaPata) {
+			if (mov_Patas >= -10.0f) {
+				mov_Patas -= 0.7f;
+			}
+			else {
+				bajaPata = false;
+				subePata = true;
+			}
+		}
+		angulovaria += 10.0f * deltaTime;
+
+		if (avanzarM) {
+			if (movMariposa > -50.0f) {
+				movMariposa -= 0.1 * deltaTime;
+
+			}
+			else {
+				if (rotM1) {
+					if (rotM < 180.0f) {
+						rotM += 10.0f * deltaTime;
+					}
+					else {
+						avanzarM = false;
+						retrocederM = true;
+						rotM1 = false;
+						rotM2 = true;
+					}
+				}
+
+
+			}
 		}
 		else {
-			subeAla = true; 
-		}
-	}
-	 if (subePata) {
-		 if (mov_Patas <= 10.0f) {
-			 mov_Patas += 0.7f;
-		 }
-		 else {
-			 subePata = false;
-			 bajaPata = true;
-		 }
-	 }
-	 if (bajaPata) {
-		 if (mov_Patas >= -10.0f) {
-			 mov_Patas -= 0.7f;
-		 }
-		 else {
-			 bajaPata = false;
-			 subePata= true;
-		 }
-	 }
-	 angulovaria += 10.0f * deltaTime;
-
-	 if (avanzarM) {
-		 if (movMariposa > -50.0f){
-			 movMariposa -= 0.1 * deltaTime;
-
-		 } else {
-			 if (rotM1) {
-				if (rotM < 180.0f) {
-					rotM += 10.0f* deltaTime;
+			if (retrocederM) {
+				if (movMariposa < 0.0f) {
+					movMariposa += 0.1 * deltaTime;
+					//printf("avanza%f \n ",movCoche);
 				}
 				else {
-					avanzarM = false;
-					retrocederM = true;
-					rotM1 = false;
-					rotM2 = true;
+					if (rotM2) {
+						if (rotM > 0.0f) {
+							rotM -= 10.0 * deltaTime;
+						}
+						else {
+							avanzarM = true;
+							retrocederM = false;
+							rotM1 = true;
+							rotM2 = false;
+						}
+					}
 				}
-			 }
-			 
-			 
-		 }
-	 }
-	 else {
-		 if (retrocederM) {
-			 if (movMariposa < 0.0f) {
-				 movMariposa += 0.1 * deltaTime;
-				 //printf("avanza%f \n ",movCoche);
-			 }
-			 else {
-				 if (rotM2) {
-					 if (rotM >0.0f) {
-						 rotM -= 10.0 * deltaTime;
-					 }
-					 else {
-						 avanzarM = true;
-						 retrocederM = false;
-						 rotM1 = true;
-						 rotM2 = false;
-					 }
-				 }
-			 }
-		 }
-	 }
-	 if (avanzarR) {
-		 if (movRana > -25.0f) {
-			 movRana -= 0.1;;
+			}
+		}
+		if (avanzarR) {
+			if (movRana > -25.0f) {
+				movRana -= 0.1;;
 
-		 }
-		 else {
-			 if (rotR1) {
-				 if (rotR < 180.0f) {
-					 rotR += 10.0f;
-				 }
-				 else {
-					 avanzarR = false;
-					 retrocederR = true;
-					 rotR1 = false;
-					 rotR2 = true;
-				 }
-			 }
+			}
+			else {
+				if (rotR1) {
+					if (rotR < 180.0f) {
+						rotR += 10.0f;
+					}
+					else {
+						avanzarR = false;
+						retrocederR = true;
+						rotR1 = false;
+						rotR2 = true;
+					}
+				}
 
 
-		 }
-	 }
-	 else {
-		 if (retrocederR) {
-			 if (movRana < 0.0f) {
-				 movRana += 0.1;;
-			 }
-			 else {
-				 if (rotR2) {
-					 if (rotR > 0.0f) {
-						 rotR -= 10.0;
-					 }
-					 else {
-						 avanzarR = true;
-						 retrocederR = false;
-						 rotR1 = true;
-						 rotR2 = false;
-					 }
-				 }
-			 }
-		 }
-	 }
+			}
+		}
+		else {
+			if (retrocederR) {
+				if (movRana < 0.0f) {
+					movRana += 0.1;;
+				}
+				else {
+					if (rotR2) {
+						if (rotR > 0.0f) {
+							rotR -= 10.0;
+						}
+						else {
+							avanzarR = true;
+							retrocederR = false;
+							rotR1 = true;
+							rotR2 = false;
+						}
+					}
+				}
+			}
+		}
+	}
 	 
 
 }
@@ -634,13 +640,13 @@ void animate(void)
 
 int main()
 {
-	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
+	mainWindow = Window(1080, 720); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
 
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+	camera = Camera(glm::vec3(-120.0f, 8.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTextureA();
@@ -806,6 +812,9 @@ int main()
 	Armadillo = Model();
 	Armadillo.LoadModel("Models/Armadillo/Armadillo.obj");
 
+	Info = Model();
+	Info.LoadModel("Models/Info/info.obj");
+
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/majesty_rt.tga");
@@ -832,7 +841,7 @@ int main()
 	pointLights[0] = PointLight(1.0f, 0.79f, 0.156f,
 		2.5f, 2.5f,
 		-70.0f, 60.0f, 0.0f,
-		0.3f, 0.2f, 0.001f);
+		0.5f, 0.2f, 0.001f);
 	pointLightCount++;
 	/*
 	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
@@ -1032,9 +1041,9 @@ int main()
 	KeyFrame[6].Camello_MovPiernaD = 0.0;
 	KeyFrame[6].Camello_MovPiernaT = 0.0;
 	//Se agregan nuevos frames 
-	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
-	printf("3.-Presiona L para guardar frame\n4.-Presiona P para habilitar guardar nuevo frame\n5.-Presiona 1 para mover en X\n6.-Presiona 2 para habilitar mover en X");
-
+	printf("\nTeclas para movimiento:\n1.-Presiona \"A\" para ir a la izquierda.\n2.-Presiona \"B\" para ir a la Derecha.\n");
+	printf("\n3.-Presiona \"W\" para ir hacia delante.\n4.-Presiona \"S\" para ir hacia atras\n\nTeclas de animación\n1.-Presiona la barra espaciadora para detener las animaciones\n 2.-Presiona \"0\" para habilitar las animaciones\n");
+	printf("\nCamara\n1.-Presiona \"V\" para ir a la vista aerea\n2.-Presiona cualquier tecla para de movimiento para volver al museo\n");
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
@@ -1104,8 +1113,8 @@ int main()
 
 		//Instancia de la Tierra
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(50.0f, 0.5f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.40f, 0.40f, 0.40f));
 		model = glm::rotate(model, earthRotationAngle * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		Tierra_Texture.UseTexture();
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1465,7 +1474,7 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PlantaTaro.UseTexture();
-		Taro.RenderModel();
+		//Taro.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, 45.0f));
@@ -1474,7 +1483,8 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PlantaTaro.UseTexture();
-		Taro.RenderModel();
+		//Taro.RenderModel();
+
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, 65.0f));
@@ -1496,7 +1506,7 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
-		JunglePlant.RenderModel();
+		//JunglePlant.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-56.0f, 8.0f, 50.0f));
@@ -1514,7 +1524,7 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
-		JunglePlant.RenderModel();
+		//JunglePlant.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-110.0f, 8.0f, 45.0f));
@@ -1523,7 +1533,7 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
-		JunglePlant.RenderModel();
+		//JunglePlant.RenderModel();
 
 		//----------
 		//Vegetación Sala 2 Parte 2
@@ -1581,6 +1591,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PlantaTaro.UseTexture();
 		Taro.RenderModel();
+		
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 8.0f, -45.0f));
@@ -1590,6 +1601,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PlantaTaro.UseTexture();
 		Taro.RenderModel();
+
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 8.0f, -65.0f));
@@ -1621,7 +1633,7 @@ int main()
 		JunglePlant.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-90.0f, 8.0f, -35.0f));
+		model = glm::translate(model, glm::vec3(-80.0f, 8.0f, -40.0f));
 		model = glm::rotate(model, anglePlantaR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		modelaux = model;
@@ -1636,7 +1648,7 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		JungleTexture.UseTexture();
-		JunglePlant.RenderModel();
+		//JunglePlant.RenderModel();
 
 		//Tigre
 		float angleInDegrees = 180.0f; // Ángulo de rotación en grados
@@ -1847,11 +1859,16 @@ int main()
 		Rana_p4.RenderModel();
 
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(1.0f,1.0f,1.0f));
+		model = glm::translate(model, glm::vec3(0.0f,0.0f,0.0f));
 		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Armadillo.RenderModel();
 
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Info.RenderModel();
 
 		glUseProgram(0);
 
@@ -1862,7 +1879,21 @@ int main()
 
 void inputKeyframes(bool* keys)
 {
-	if (keys[GLFW_KEY_J])
+	if (keys[GLFW_KEY_SPACE] && GLFW_PRESS)
+	{
+		if (anim == true) {
+			printf("\n Presiona 0 habilitar las animaciones'\n");
+			anim = false;
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (anim == false) {
+			printf("Presiona la barra espaciadora para detener las animaciones'\n");
+			anim = true;
+		}
+	}
+	/*if (keys[GLFW_KEY_J])
 		Camello_MovX = (mainWindow.getCamello_MovX());
 	if (keys[GLFW_KEY_L])
 		Camello_MovX = (mainWindow.getCamello_MovX());
@@ -1901,78 +1932,42 @@ void inputKeyframes(bool* keys)
 	if (keys[GLFW_KEY_C])
 		Camello_MovCabeza = (mainWindow.getCamello_MovCabeza());
 	if (keys[GLFW_KEY_V])
-		Camello_MovCabeza = (mainWindow.getCamello_MovCabeza());
-
-	if (keys[GLFW_KEY_SPACE])
-	{
-		if (reproduciranimacion < 1)
-		{
-			if (play == false && (FrameIndex > 1))
-			{
-				resetElements();
-				//First Interpolation				
-				interpolation();
-				play = true;
-				playIndex = 0;
-				i_curr_steps = 0;
-				reproduciranimacion++;
-				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
-				habilitaranimacion = 0;
-
-			}
-			else
-			{
-				play = false;
-
-			}
-		}
-	}
-	if (keys[GLFW_KEY_0])
-	{
-		if (habilitaranimacion < 1 && reproduciranimacion>0)
-		{
-			printf("Ya puedes reproducir de nuevo la animación con la tecla de barra espaciadora'\n");
-			reproduciranimacion = 0;
-
-		}
-	}
-
-	if (keys[GLFW_KEY_M])
-	{
-		if (guardoFrame < 1)
-		{
-			saveFrame();
-			/*
-			printf("Gorila_MovX es: %f\n", Gorila_MovX);
-			printf("Gorila_MovY es: %f\n", Gorila_MovY);
-			printf("Gorila_MovZ es: %f\n", Gorila_MovZ);
-			printf("Gorila_MovCuerpo es: %f\n", Gorila_MovCuerpo);
-			printf("Gorila_MovBrazo es: %f\n", Gorila_MovBrazo);
-			printf("Gorila_MovManoL es: %f\n", Gorila_MovManoL);
-			printf("Gorila_MovManoR es: %f\n", Gorila_MovManoR);
-			*/
-			printf("Camello_MovX es: %f\n", Camello_MovX);
-			printf("Camello_MovY es: %f\n", Camello_MovY);
-			printf("Camello_MovZ es: %f\n", Camello_MovZ);
-			printf("Camello_MovCuerpo es: %f\n", Camello_MovCuerpo);
-			printf("Camello_MovCuello es: %f\n", Camello_MovCuello);
-			printf("Camello_MovCabeza es: %f\n", Camello_MovCabeza);
-			printf("Camello_MovRodillaD es: %f\n", Camello_MovRodillaD);
-			printf("Camello_MovRodillaT es: %f\n", Camello_MovRodillaT);
-			printf("Camello_MovPiernaD es: %f\n", Camello_MovPiernaD);
-			printf("Camello_MovPiernaT es: %f\n", Camello_MovPiernaT);
-
-			printf("presiona P para habilitar guardar otro frame'\n");
-			guardoFrame++;
-			reinicioFrame = 0;
-		}
-	}
-	if (keys[GLFW_KEY_P])
+		Camello_MovCabeza = (mainWindow.getCamello_MovCabeza());*/
+	//if (keys[GLFW_KEY_M])
+	//{
+	//	if (guardoFrame < 1)
+	//	{
+	//		saveFrame();
+	//		/*
+	//		printf("Gorila_MovX es: %f\n", Gorila_MovX);
+	//		printf("Gorila_MovY es: %f\n", Gorila_MovY);
+	//		printf("Gorila_MovZ es: %f\n", Gorila_MovZ);
+	//		printf("Gorila_MovCuerpo es: %f\n", Gorila_MovCuerpo);
+	//		printf("Gorila_MovBrazo es: %f\n", Gorila_MovBrazo);
+	//		printf("Gorila_MovManoL es: %f\n", Gorila_MovManoL);
+	//		printf("Gorila_MovManoR es: %f\n", Gorila_MovManoR);
+	//		*/
+	//		printf("Camello_MovX es: %f\n", Camello_MovX);
+	//		printf("Camello_MovY es: %f\n", Camello_MovY);
+	//		printf("Camello_MovZ es: %f\n", Camello_MovZ);
+	//		printf("Camello_MovCuerpo es: %f\n", Camello_MovCuerpo);
+	//		printf("Camello_MovCuello es: %f\n", Camello_MovCuello);
+	//		printf("Camello_MovCabeza es: %f\n", Camello_MovCabeza);
+	//		printf("Camello_MovRodillaD es: %f\n", Camello_MovRodillaD);
+	//		printf("Camello_MovRodillaT es: %f\n", Camello_MovRodillaT);
+	//		printf("Camello_MovPiernaD es: %f\n", Camello_MovPiernaD);
+	//		printf("Camello_MovPiernaT es: %f\n", Camello_MovPiernaT);
+	//		printf("presiona P para habilitar guardar otro frame'\n");
+	//		guardoFrame++;
+	//		reinicioFrame = 0;
+	//	}
+	//}
+	/*if (keys[GLFW_KEY_P])
 	{
 		if (reinicioFrame < 1 && guardoFrame>0)
 		{
 			guardoFrame = 0;
 			printf("Ya puedes guardar otro frame presionando la tecla L'\n");
 		}
-	}
+	}*/
 }
