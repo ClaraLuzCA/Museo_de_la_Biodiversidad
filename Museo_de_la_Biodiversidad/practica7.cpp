@@ -114,6 +114,8 @@ Model PiernaTLCamello;
 Model PiernaTRCamello;
 Model CuelloCamello;
 
+Model Armadillo;
+
 glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
 glm::mat4 tmpCuerpoGorila = glm::mat4(1.0f);
@@ -626,6 +628,9 @@ int main()
 
 	PiernaTRCamello = Model();
 	PiernaTRCamello.LoadModel("Models/Camello/TR_Pata.obj");
+
+	Armadillo = Model();
+	Armadillo.LoadModel("Models/Armadillo/Armadillo.obj");
 
 
 	std::vector<std::string> skyboxFaces;
@@ -1604,73 +1609,13 @@ int main()
 		model = glm::translate(tmpRodillaTCamello, glm::vec3(Camello_MovX + 0.05f, Camello_MovY - 0.95f, Camello_MovZ + 0.55f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		//Pivote.RenderModel();
-		/*
-		//Instancia del coche 
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f + mainWindow.getmuevex(), 0.5f, -3.0f));
-		modelaux = model;
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Kitt_M.RenderModel();
 
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		color = glm::vec3(0.5f, 0.5f, 0.5f);//llanta con color gris
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(1.0f,1.0f,1.0f));
+		model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
+		Armadillo.RenderModel();
 
-		//Llanta trasera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 8.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.0f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.5f, -0.5f, 1.5f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Llanta_M.RenderModel();
-	
-
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 5.0f, 6.0));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Blackhawk_M.RenderModel();
-
-		//Agave ¿qué sucede si lo renderizan antes del coche y el helicóptero? // DESAPAECE EL COCHE Y EL HELICOPTERO
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		
-		//blending: transparencia o traslucidez
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		AgaveTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[3]->RenderMesh();
-		glDisable(GL_BLEND);
-		*/
 
 		glUseProgram(0);
 
