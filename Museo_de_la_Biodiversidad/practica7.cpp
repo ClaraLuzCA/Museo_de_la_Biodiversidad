@@ -50,9 +50,13 @@ std::vector<Shader> shaderList;
 
 float mov_alas = 0.0f;
 float movMariposa;
+float mov_Patas = 0.0f;
+float movRana;
+
 float movOffset;
 float angulovaria = 0.0;
 float rotM = 0.0f;
+float rotR = 0.0f;
 Camera camera;
 
 Texture brickTexture;
@@ -124,6 +128,14 @@ Model Cuerpo_Mariposa;
 Model ala1;
 Model ala2;
 Model Mariposa;
+
+//RANA
+Model Rana;
+Model Rana_p1;
+Model Rana_p2;
+Model Rana_p3;
+Model Rana_p4;
+
 
 glm::mat4 tmpRotGorila = glm::mat4(1.0f);
 glm::mat4 tmpCaderaGorila = glm::mat4(1.0f);
@@ -346,6 +358,11 @@ bool avanzarM = true;
 bool retrocederM = false;
 bool rotM1 = true;
 bool rotM2 = false;
+bool subePata = true, bajaPata = false;
+bool avanzarR = true;
+bool retrocederR = false;
+bool rotR1 = true;
+bool rotR2 = false;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -507,6 +524,24 @@ void animate(void)
 			subeAla = true; 
 		}
 	}
+	 if (subePata) {
+		 if (mov_Patas <= 10.0f) {
+			 mov_Patas += 0.7f;
+		 }
+		 else {
+			 subePata = false;
+			 bajaPata = true;
+		 }
+	 }
+	 if (bajaPata) {
+		 if (mov_Patas >= -10.0f) {
+			 mov_Patas -= 0.7f;
+		 }
+		 else {
+			 bajaPata = false;
+			 subePata= true;
+		 }
+	 }
 	 angulovaria += 10.0f * deltaTime;
 
 	 if (avanzarM) {
@@ -545,6 +580,47 @@ void animate(void)
 						 retrocederM = false;
 						 rotM1 = true;
 						 rotM2 = false;
+					 }
+				 }
+			 }
+		 }
+	 }
+	 if (avanzarR) {
+		 if (movRana > -25.0f) {
+			 movRana -= 0.1 * deltaTime;
+
+		 }
+		 else {
+			 if (rotR1) {
+				 if (rotR < 180.0f) {
+					 rotR += 10.0f * deltaTime;
+				 }
+				 else {
+					 avanzarR = false;
+					 retrocederR = true;
+					 rotR1 = false;
+					 rotR2 = true;
+				 }
+			 }
+
+
+		 }
+	 }
+	 else {
+		 if (retrocederR) {
+			 if (movRana < 0.0f) {
+				 movRana += 0.1 * deltaTime;
+			 }
+			 else {
+				 if (rotR2) {
+					 if (rotR > 0.0f) {
+						 rotR -= 10.0 * deltaTime;
+					 }
+					 else {
+						 avanzarR = true;
+						 retrocederR = false;
+						 rotR1 = true;
+						 rotR2 = false;
 					 }
 				 }
 			 }
@@ -597,6 +673,19 @@ int main()
 	//Texturas Gorila
 	//GorilaTexture = Texture("Textures/Body-TM_u0_v0.png");
 	//GorilaTexture.LoadTextureA();
+	
+	//RANA
+	Rana = Model();
+	Rana.LoadModel("Models/rana.obj");
+	Rana_p1 = Model();
+	Rana_p1.LoadModel("Models/rana_pda.obj");
+	Rana_p2 = Model();
+	Rana_p2.LoadModel("Models/rana_pia.obj");
+	Rana_p3 = Model();
+	Rana_p3.LoadModel("Models/rana_pde.obj");
+	Rana_p4 = Model();
+	Rana_p4.LoadModel("Models/rana_pie.obj");
+
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
@@ -1337,7 +1426,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Monstera.RenderModel();
+		//Monstera.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(65.0f, 7.5f, -62.0f));
@@ -1753,6 +1842,36 @@ int main()
 
 		model = glm::translate(tmpRodillaTCamello, glm::vec3(Camello_MovX + 0.05f, Camello_MovY - 0.95f, Camello_MovZ + 0.55f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		//rana
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(50.0f+movRana, 9.5f+mov_Patas*(0.1), -45.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, (rotR-90) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana.RenderModel();
+		model = modelaux;
+		model = glm::rotate(model, mov_Patas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p1.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, mov_Patas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p2.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, (mov_Patas-10) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p3.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, (mov_Patas - 10) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p4.RenderModel();
+
+
 		//Pivote.RenderModel();
 		/*
 		//Instancia del coche 
