@@ -143,7 +143,7 @@
     <ClCompile Include="include\SpotLight.cpp" />
     <ClCompile Include="include\Texture.cpp" />
     <ClCompile Include="include\Window.cpp" />
-    <ClCompile Include="practica7.cpp" />
+    <ClCompile Include="ProyectoFinal-MuseoDeLaBiodiversidad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />

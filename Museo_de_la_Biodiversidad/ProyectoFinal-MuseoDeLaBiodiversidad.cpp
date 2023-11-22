@@ -48,6 +48,15 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
+float mov_alas = 0.0f;
+float movMariposa=0.0f;
+float mov_Patas = 0.0f;
+float movRana=0.0f;
+
+float movOffset;
+float angulovaria = 0.0;
+float rotM = 0.0f;
+float rotR = 0.0f;
 Camera camera;
 
 Texture brickTexture;
@@ -74,7 +83,7 @@ Model Blackhawk_M;
 Model Dado_M;
 Model Domos;
 Model Tierra;
-Model Mariposa;
+
 Model Lampara;
 Model Helecho;
 Model Monstera;
@@ -113,6 +122,20 @@ Model PiernaDRCamello;
 Model PiernaTLCamello;
 Model PiernaTRCamello;
 Model CuelloCamello;
+
+//CUERPO MARIPOSA
+Model Cuerpo_Mariposa;
+Model ala1;
+Model ala2;
+Model Mariposa;
+
+//RANA
+Model Rana;
+Model Rana_p1;
+Model Rana_p2;
+Model Rana_p3;
+Model Rana_p4;
+
 
 Model Armadillo;
 
@@ -286,7 +309,7 @@ float	Camello_MovX = 0.0f,
 		Camello_MovPiernaT = 0.0f;
 
 #define MAX_FRAMES 100
-int i_max_steps = 240;
+int i_max_steps = 120;
 int i_curr_steps = 0;
 typedef struct _frame
 {
@@ -332,6 +355,16 @@ int FrameIndex = 7;			//introducir datos
 
 //start debe ser false para que inicie solo
 bool start = false, play = false;
+bool subeAla = true;
+bool avanzarM = true; 
+bool retrocederM = false;
+bool rotM1 = true;
+bool rotM2 = false;
+bool subePata = true, bajaPata = false;
+bool avanzarR = true;
+bool retrocederR = false;
+bool rotR1 = true;
+bool rotR2 = false;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -406,6 +439,7 @@ void interpolation(void)
 
 void animate(void)
 {
+	
 	if (!start) {
 		resetElements();
 		//First Interpolation				
@@ -474,6 +508,125 @@ void animate(void)
 		}
 
 	}
+	if (subeAla) {
+		if (mov_alas <= 45.0f) {
+			mov_alas +=0.8f;
+		}
+		else {
+			subeAla = false;
+		}
+	}else {
+		if (mov_alas >= -45.0f) {
+			mov_alas -= 0.8f;
+		}
+		else {
+			subeAla = true; 
+		}
+	}
+	 if (subePata) {
+		 if (mov_Patas <= 10.0f) {
+			 mov_Patas += 0.7f;
+		 }
+		 else {
+			 subePata = false;
+			 bajaPata = true;
+		 }
+	 }
+	 if (bajaPata) {
+		 if (mov_Patas >= -10.0f) {
+			 mov_Patas -= 0.7f;
+		 }
+		 else {
+			 bajaPata = false;
+			 subePata= true;
+		 }
+	 }
+	 angulovaria += 10.0f * deltaTime;
+
+	 if (avanzarM) {
+		 if (movMariposa > -50.0f){
+			 movMariposa -= 0.1 * deltaTime;
+
+		 } else {
+			 if (rotM1) {
+				if (rotM < 180.0f) {
+					rotM += 10.0f* deltaTime;
+				}
+				else {
+					avanzarM = false;
+					retrocederM = true;
+					rotM1 = false;
+					rotM2 = true;
+				}
+			 }
+			 
+			 
+		 }
+	 }
+	 else {
+		 if (retrocederM) {
+			 if (movMariposa < 0.0f) {
+				 movMariposa += 0.1 * deltaTime;
+				 //printf("avanza%f \n ",movCoche);
+			 }
+			 else {
+				 if (rotM2) {
+					 if (rotM >0.0f) {
+						 rotM -= 10.0 * deltaTime;
+					 }
+					 else {
+						 avanzarM = true;
+						 retrocederM = false;
+						 rotM1 = true;
+						 rotM2 = false;
+					 }
+				 }
+			 }
+		 }
+	 }
+	 if (avanzarR) {
+		 if (movRana > -25.0f) {
+			 movRana -= 0.1;;
+
+		 }
+		 else {
+			 if (rotR1) {
+				 if (rotR < 180.0f) {
+					 rotR += 10.0f;
+				 }
+				 else {
+					 avanzarR = false;
+					 retrocederR = true;
+					 rotR1 = false;
+					 rotR2 = true;
+				 }
+			 }
+
+
+		 }
+	 }
+	 else {
+		 if (retrocederR) {
+			 if (movRana < 0.0f) {
+				 movRana += 0.1;;
+			 }
+			 else {
+				 if (rotR2) {
+					 if (rotR > 0.0f) {
+						 rotR -= 10.0;
+					 }
+					 else {
+						 avanzarR = true;
+						 retrocederR = false;
+						 rotR1 = true;
+						 rotR2 = false;
+					 }
+				 }
+			 }
+		 }
+	 }
+	 
+
 }
 
 ///////////////* FIN KEYFRAMES*////////////////////////////
@@ -519,6 +672,19 @@ int main()
 	//Texturas Gorila
 	//GorilaTexture = Texture("Textures/Body-TM_u0_v0.png");
 	//GorilaTexture.LoadTextureA();
+	
+	//RANA
+	Rana = Model();
+	Rana.LoadModel("Models/rana.obj");
+	Rana_p1 = Model();
+	Rana_p1.LoadModel("Models/rana_pda.obj");
+	Rana_p2 = Model();
+	Rana_p2.LoadModel("Models/rana_pia.obj");
+	Rana_p3 = Model();
+	Rana_p3.LoadModel("Models/rana_pde.obj");
+	Rana_p4 = Model();
+	Rana_p4.LoadModel("Models/rana_pie.obj");
+
 
 	Kitt_M = Model();
 	Kitt_M.LoadModel("Models/kitt_optimizado.obj");
@@ -538,6 +704,14 @@ int main()
 	Helecho.LoadModel("Models/helecho.obj");
 	Monstera = Model();
 	Monstera.LoadModel("Models/monsterra2.obj");
+
+	//cuerpo mariposa
+	Cuerpo_Mariposa = Model();
+	Cuerpo_Mariposa.LoadModel("Models/cuerpo_mariposa.obj");
+	ala1 = Model();
+	ala1.LoadModel("Models/ala1.obj");
+	ala2 = Model();
+	ala2.LoadModel("Models/ala2.obj");
 
 	//Cargamos Tigre
 	Tigre = Model();
@@ -647,36 +821,57 @@ int main()
 	Material_opaco = Material(0.3f, 4);
 
 	//luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
+	mainLight = DirectionalLight(0.4f, 0.4f, 0.4f,
 		0.6f, 0.6f,
 		0.0f, -1.0f, 0.0f);
 
 	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
-	/*
 	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f,
-		-6.0f, 1.5f, 1.5f,
-		0.3f, 0.2f, 0.1f);
+	pointLights[0] = PointLight(1.0f, 0.79f, 0.156f,
+		2.5f, 2.5f,
+		-70.0f, 60.0f, 0.0f,
+		0.3f, 0.2f, 0.001f);
 	pointLightCount++;
-	pointLights[1] = PointLight(0.0f, 0.0f, 1.0f,
+	/*
+	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f,
-		6.0f, 4.5f, 1.5f,
+		20.0f, 7.5f, -35.0f,
 		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
+	pointLightCount++;*/
 
-	unsigned int spotLightCount = 0;
 	//linterna
+	//spotLightCount++;
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		5.0f);
+		30.0f, 8.0f,
+		90.0f, 10.0f, 45.0f,
+		-45.0f, 50.0f, 0.0f,
+		0.02f, 0.2f, 0.05f,
+		50.0f);
 	spotLightCount++;
-
+	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
+		5.0f, 4.0f,
+		20.0f, 13.0f, -35.0f,
+		180.0f, 50.0f, -180.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	spotLights[2] = SpotLight(1.0f, 1.0f, 1.0f,
+		5.0f, 4.0f,
+		18.0f, 12.0f, 45.0f,
+		180.0f, 50.0f, -180.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	spotLights[3] = SpotLight(1.0f, 1.0f, 1.0f,
+		30.0f, 8.0f,
+		90.0f, 12.0f, -35.0f,
+		-90.0f, 100.0f, 0.0f,
+		0.02f, 0.2f, 0.05f,
+		70.0f);
+	spotLightCount++;
+	/*
 	//luz fija
 	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f,
@@ -836,7 +1031,6 @@ int main()
 	KeyFrame[6].Camello_MovRodillaT = 0.0;
 	KeyFrame[6].Camello_MovPiernaD = 0.0;
 	KeyFrame[6].Camello_MovPiernaT = 0.0;
-
 	//Se agregan nuevos frames 
 	printf("\nTeclas para uso de Keyframes:\n1.-Presionar barra espaciadora para reproducir animacion.\n2.-Presionar 0 para volver a habilitar reproduccion de la animacion\n");
 	printf("3.-Presiona L para guardar frame\n4.-Presiona P para habilitar guardar nuevo frame\n5.-Presiona 1 para mover en X\n6.-Presiona 2 para habilitar mover en X");
@@ -877,7 +1071,7 @@ int main()
 		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
 		glm::vec3 lowerLight = camera.getCameraPosition();
 		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		//spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
 
 		//información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
@@ -917,14 +1111,26 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Tierra.RenderModel();
 
-		//Instancia Mariposas
 		//mariposa centro
+		//cuerpo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(50.0f, 50.5f, 5.0f));
-		model = glm::scale(model, glm::vec3(0.50f, 0.50f, 0.50f));
-
+		model = glm::translate(model, glm::vec3(80.0f+movMariposa, 25.5f+ mov_alas*(0.1), 5.0f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
+		model = glm::rotate(model, glm::radians(rotM), glm::vec3(0.0f, 1.0f, 0.0f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Mariposa.RenderModel();
+		Cuerpo_Mariposa.RenderModel();
+		//alas
+		model = modelaux;
+		model = glm::rotate(model, glm::radians(mov_alas), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ala1.RenderModel();
+		
+		model = modelaux;
+		model = glm::rotate(model, glm::radians(-mov_alas), glm::vec3(1.0f,0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		ala2.RenderModel();
+
 		//mariposa atras
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(70.0f, 40.5f, 5.0f));
@@ -985,7 +1191,8 @@ int main()
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(90.0f, 7.5f, -35.0f));
 		model = glm::scale(model, glm::vec3(0.20f, 0.20f, 0.20f));
-		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, -45 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		Lampara.RenderModel();
@@ -1192,7 +1399,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.9f, 1.5f, 0.9f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Monstera.RenderModel();
+		//Monstera.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(65.0f, 7.5f, -62.0f));
@@ -1234,8 +1441,8 @@ int main()
 		Taro.RenderModel();
 		//Vegetación Sala 2
 		model = glm::mat4(1.0);
-		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::translate(model, glm::vec3(-95.0f, 8.0f, 54.0f));
+		model = glm::rotate(model, angleCactusR, glm::vec3(0.0f, 1.0f, 1.0f)); // Rotar 
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1606,9 +1813,38 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		CabezaCamello.RenderModel();
 
-		model = glm::translate(tmpRodillaTCamello, glm::vec3(Camello_MovX + 0.05f, Camello_MovY - 0.95f, Camello_MovZ + 0.55f));
+		//model = glm::scale(glm::mat4(1.0f), glm::vec3(2.5f,2.5f,2.5f));
+		model = glm::translate(model, glm::vec3(Camello_MovX, Camello_MovY, Camello_MovZ));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		//Pivote.RenderModel();
+
+		//rana
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(60.0f+(movRana), 9.5f+mov_Patas*(0.1), -45.0f));
+		model = glm::scale(model, glm::vec3(0.10f, 0.10f, 0.10f));
+		model = glm::rotate(model, (rotR-90) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana.RenderModel();
+		model = modelaux;
+		model = glm::rotate(model, mov_Patas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p1.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, mov_Patas * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p2.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, (mov_Patas-10) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p3.RenderModel();
+
+		model = modelaux;
+		model = glm::rotate(model, (mov_Patas - 10) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Rana_p4.RenderModel();
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(1.0f,1.0f,1.0f));
