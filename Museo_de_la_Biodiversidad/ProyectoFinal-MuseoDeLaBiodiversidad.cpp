@@ -1095,7 +1095,7 @@ int main()
 	//Se agregan nuevos frames 
 	printf("\nTeclas para movimiento:\n1.-Presiona \"A\" para ir a la izquierda.\n2.-Presiona \"B\" para ir a la Derecha.\n");
 	printf("\n3.-Presiona \"W\" para ir hacia delante.\n4.-Presiona \"S\" para ir hacia atras\n\nTeclas de animación\n1.-Presiona la barra espaciadora para detener las animaciones\n 2.-Presiona \"0\" para habilitar las animaciones\n");
-	printf("\nCamara\n1.-Presiona \"V\" para ir a la vista aerea\n2.-Presiona cualquier tecla para de movimiento para volver al museo\n");
+	printf("\nCamara\n1.-Presiona \"V\" para ir a la vista aerea del Desierto\n2.-Presiona 'B' para ir a la vista area de la Selva\n3.- Presiona 'M' más cualquier tecla de Movimiento para volver a el recorrido normal");
 	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{

@@ -1,9 +1,0 @@
-Working on the Virtual Biodiversity Museum has been a significant learning journey. The project offered a deep dive into graphics programming, where I had the opportunity to work with OpenGL in Visual Studio. This allowed me to gain hands-on experience with 3D modeling, lighting, and camera manipulation.
-
-Creating animations using keyframes, hierarchical modeling, and matrix transformations was another aspect of the project that enriched my understanding of computer animation techniques. It was fascinating to see how these elements came together to create smooth and realistic movements for the 3D models.
-
-The project also served as a practical exercise in software development practices. Organizing code into separate files, using constructors and structures, and managing dependencies were all part of the process. This not only improved my software development and debugging skills but also emphasized the importance of writing clean and maintainable code.
-
-One of the challenges of the project was simulating collisions and implementing a game-like camera. Tackling these issues required a good deal of problem-solving and algorithmic thinking. It was a rewarding experience to see these features working seamlessly, enhancing the interactivity of the museum.
-
-Overall, the Virtual Biodiversity Museum project was a valuable opportunity to apply and expand my technical skills in a creative and engaging context. It was not just about coding, but also about creating an educational and interactive experience for users to learn about biodiversity.
