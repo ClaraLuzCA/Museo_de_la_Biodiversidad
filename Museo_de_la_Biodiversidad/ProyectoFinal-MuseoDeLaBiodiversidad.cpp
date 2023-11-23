@@ -367,6 +367,9 @@ bool avanzarR = true;
 bool retrocederR = false;
 bool rotR1 = true;
 bool rotR2 = false;
+bool camaraDesierto = false, camaraSelva = false;
+bool startAnimation = true, camRec1 = true, camRec2 = false, camRec3 = false, camRec4 = false;
+float camX = -120.0f, camY=8.0f, camZ=-20.0f, vista = 0.0f,inclinacion = 0.0f;
 int playIndex = 0;
 
 void saveFrame(void) //tecla L
@@ -441,7 +444,6 @@ void interpolation(void)
 
 void animate(void)
 {
-	
 	if (!start) {
 		resetElements();
 		//First Interpolation				
@@ -460,6 +462,50 @@ void animate(void)
 	if (anim) {
 		if (play)
 		{
+			if (startAnimation) {
+				if (camRec1) {
+					if (camX >= 120.0f) {
+						camRec1 = false;
+						camRec2 = true;
+					}
+					else {
+						camX += 0.2f;
+						vista = 90.0f;
+						inclinacion = 0.0f;
+					}
+				}
+				else if (camRec2) {
+					if (camZ >= 20.0f) {
+						camRec2 = false;
+						camRec3 = true;
+					}
+					else {
+						camZ += 0.2f;
+						vista = 180.0f;
+					}
+				}
+				else if (camRec3) {
+					if (camX <= -120.0f) {
+						camRec3 = false;
+						camRec4 = true;
+					}
+					else {
+						camX -= 0.2f;
+						vista = -90.0f;
+					}
+				}
+				else if (camRec4) {
+					if (camZ <= -20.0f) {
+						camRec4 = false;
+						camRec1 = true;
+					}
+					else {
+						camZ -= 0.2f;
+						vista = 0.0f;
+					}
+				}
+				camera.startAnimationCamera(camX, camZ, vista, inclinacion);
+			}
 			if (i_curr_steps >= i_max_steps) //fin de animación entre frames?
 			{
 				playIndex++;
@@ -629,6 +675,12 @@ void animate(void)
 					}
 				}
 			}
+		}
+		if (camaraDesierto) {
+			camera.setCameraPositionDesierto();
+		}
+		else if (camaraSelva) {
+			camera.setCameraPositionSelva();
 		}
 	}
 	 
@@ -1892,6 +1944,40 @@ void inputKeyframes(bool* keys)
 			printf("Presiona la barra espaciadora para detener las animaciones'\n");
 			anim = true;
 		}
+	}
+	if (keys[GLFW_KEY_V])
+	{
+		if (startAnimation)
+			startAnimation = false;
+		camaraSelva = false;
+		camaraDesierto = true;
+	}
+	else if (keys[GLFW_KEY_B]) {
+		if (startAnimation)
+			startAnimation = false;
+		camaraDesierto = false;
+		camaraSelva = true;
+	}
+	else if (keys[GLFW_KEY_M]) {
+		camaraDesierto = false;
+		camaraSelva = false;
+		camera.setCameraPositionMuseo();
+	}
+	if (keys[GLFW_KEY_W]) {
+		if (startAnimation)
+			startAnimation = false;
+	}
+	if (keys[GLFW_KEY_A]) {
+		if (startAnimation)
+			startAnimation = false;
+	}
+	if (keys[GLFW_KEY_S]) {
+		if (startAnimation)
+			startAnimation = false;
+	}
+	if (keys[GLFW_KEY_D]) {
+		if (startAnimation)
+			startAnimation = false;
 	}
 	/*if (keys[GLFW_KEY_J])
 		Camello_MovX = (mainWindow.getCamello_MovX());

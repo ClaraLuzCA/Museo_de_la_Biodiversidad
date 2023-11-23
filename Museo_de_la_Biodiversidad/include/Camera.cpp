@@ -9,6 +9,7 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	yaw = startYaw;
 	pitch = startPitch;
 	front = glm::vec3(0.0f, 0.0f, -1.0f);
+	frontTemp = glm::vec3(0.0f, -1.0f, 0.0f);
 
 	moveSpeed = startMoveSpeed;
 	turnSpeed = startTurnSpeed;
@@ -140,12 +141,6 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 			}
 		}
 	}
-	if (keys[GLFW_KEY_V])
-	{
-		position.y = 250.0f;
-		position.x = 0.0f;
-		position.z = 0.0f;
-	}
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
@@ -172,6 +167,48 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 glm::mat4 Camera::calculateViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
+}
+
+void Camera::startAnimationCamera(float x, float z, float vista,float inclinacion) {
+	position.x = x;
+	position.z = z;
+	yaw = vista; 
+	pitch = inclinacion;
+}
+
+void Camera::setCameraPositionMuseo() {
+	position.x = -120.0f;
+	position.y = 8.0f;
+	position.z = 0.0f;
+	pitch = 0.0f;
+}
+
+void Camera::setCameraPositionDesierto() {
+	position.x = -70.0f;
+	position.y = 60.0f;
+	position.z = 0.0f;
+	if (pitch <= -160.0f) {
+		pitch = -160.0f;
+	}
+	else if (pitch >= -20.0f) {
+		pitch = -20.0f;
+	}
+	update();
+	
+}
+
+void Camera::setCameraPositionSelva() {
+	position.x = 70.0f;
+	position.y = 60.0f;
+	position.z = 0.0f;
+	if (pitch <= -160.0f) {
+		pitch = -160.0f;
+	}
+	else if (pitch >= -20.0f) {
+		pitch = -20.0f;
+	}
+	update();
+
 }
 
 glm::vec3 Camera::getCameraPosition()

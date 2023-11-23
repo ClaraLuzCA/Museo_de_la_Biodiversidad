@@ -16,6 +16,10 @@ public:
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
 
+	void setCameraPositionSelva();
+	void setCameraPositionDesierto();
+	void setCameraPositionMuseo();
+	void startAnimationCamera(float x, float y, float vista, float inclinacion);
 	glm::vec3 getCameraPosition();
 	glm::vec3 getCameraDirection();
 	glm::mat4 calculateViewMatrix();
@@ -25,6 +29,7 @@ public:
 private:
 	glm::vec3 position;
 	glm::vec3 front;
+	glm::vec3 frontTemp;
 	glm::vec3 up;
 	glm::vec3 right;
 	glm::vec3 worldUp;
