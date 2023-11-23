@@ -130,38 +130,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="DirectionalLight.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh_tn.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="practica7.cpp" />
-    <ClCompile Include="Shader_light.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="SpotLight.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="include\Camera.cpp" />
+    <ClCompile Include="include\DirectionalLight.cpp" />
+    <ClCompile Include="include\Light.cpp" />
+    <ClCompile Include="include\Material.cpp" />
+    <ClCompile Include="include\Mesh_tn.cpp" />
+    <ClCompile Include="include\Model.cpp" />
+    <ClCompile Include="include\PointLight.cpp" />
+    <ClCompile Include="include\Shader_light.cpp" />
+    <ClCompile Include="include\Skybox.cpp" />
+    <ClCompile Include="include\Sphere.cpp" />
+    <ClCompile Include="include\SpotLight.cpp" />
+    <ClCompile Include="include\Texture.cpp" />
+    <ClCompile Include="include\Window.cpp" />
+    <ClCompile Include="ProyectoFinal-MuseoDeLaBiodiversidad.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CommonValues.h" />
-    <ClInclude Include="definition.h" />
-    <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="Shader_light.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="SpotLight.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\CommonValues.h" />
+    <ClInclude Include="include\definition.h" />
+    <ClInclude Include="include\DirectionalLight.h" />
+    <ClInclude Include="include\eglew.h" />
+    <ClInclude Include="include\glew.h" />
+    <ClInclude Include="include\glfw3.h" />
+    <ClInclude Include="include\glfw3native.h" />
+    <ClInclude Include="include\glxew.h" />
+    <ClInclude Include="include\Light.h" />
+    <ClInclude Include="include\Material.h" />
+    <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\Model.h" />
+    <ClInclude Include="include\PointLight.h" />
+    <ClInclude Include="include\Shader_light.h" />
+    <ClInclude Include="include\Skybox.h" />
+    <ClInclude Include="include\Sphere.h" />
+    <ClInclude Include="include\SpotLight.h" />
+    <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\wglew.h" />
+    <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
